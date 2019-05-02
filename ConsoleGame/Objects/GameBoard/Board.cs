@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,17 +12,13 @@ namespace ConsoleGame.Objects.GameBoard
 {
     class Board
     {
-        private int left;
-
+        public Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
         public List<Panel> Panels { get; set; }
+        public List<Panel> AlteredPanels { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
-        public int Left
-        {
-            get { return left; }
-            set { left = value * 2; }
-        }
-        public int Top;
+        public int Left { get; set; }
+        public int Top { get; set; }
 
         public Board(int columns, int rows)
         {
@@ -29,40 +26,50 @@ namespace ConsoleGame.Objects.GameBoard
             Columns = columns;
 
             Panels = new List<Panel>();
+            AlteredPanels = new List<Panel>();
 
             for (int y = 0; y < rows; y++)
                 for (int x = 0; x < columns; x++)
                     Panels.Add(new Panel(x, y));
 
             var enumValues = Enum.GetValues(typeof(OccupationType));
-            Dictionary<OccupationType, ConsoleOutputFormat> formats = new Dictionary<OccupationType, ConsoleOutputFormat>(enumValues.Length);
+            Formats = new Dictionary<OccupationType, ConsoleOutputFormat>(enumValues.Length);
 
             for (int i = 0; i < enumValues.Length; i++)
             {
                 OccupationType occupationType = ((OccupationType)enumValues.GetValue(i));
 
-                formats.Add(occupationType, occupationType.GetAttributeOfType<ConsoleOutputFormat>());
+                Formats.Add(occupationType, occupationType.GetAttributeOfType<ConsoleOutputFormat>());
             }
+        }
 
-            ObjectCache cache = MemoryCache.Default;
+        public Panel this[int column, int row]
+        {
+            get
+            {
+                Panel tmp = Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row)));
 
-            cache.Add("formats", formats, new CacheItemPolicy());
+                AlteredPanels.Add(tmp);
+
+                return Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row)));
+            }
         }
 
         public void Print(int left, int top)
         {
-            this.left = left;
+            Left = left;
             Top = top;
 
             ObjectCache cache = MemoryCache.Default;
             CacheItem contents = cache.GetCacheItem("formats");
 
-            var formats = (contents.Value as Dictionary<OccupationType, ConsoleOutputFormat>);
-
             StringBuilder stringBuilder = new StringBuilder(Columns * 2);
             Panel currentPanel;
             Panel nextPanel;
             int count = 1;
+
+            Console.BackgroundColor = Formats[OccupationType.Neutral].BackgroundColor;
+            Console.Clear();
 
             for (int y = 0; y < Rows; y++)
             {
@@ -71,6 +78,10 @@ namespace ConsoleGame.Objects.GameBoard
                 for (int x = 0; x < Columns; x++)
                 {
                     currentPanel = this[x, y];
+
+                    if (currentPanel.OccupationType == OccupationType.Neutral)
+                        continue;
+
                     nextPanel = x == Columns + 1 ? null : this[x + 1, y];
 
                     if (nextPanel != null && currentPanel.OccupationType == nextPanel.OccupationType)
@@ -78,7 +89,7 @@ namespace ConsoleGame.Objects.GameBoard
 
                     else
                     {
-                        var format = formats[currentPanel.OccupationType];
+                        var format = Formats[currentPanel.OccupationType];
 
                         for (; count != 0; count--)
                             stringBuilder.Append(format.Text);
@@ -93,13 +104,17 @@ namespace ConsoleGame.Objects.GameBoard
             }
         }
 
-        public Panel this[int column, int row]
+        public void Update()
         {
-            get
+            for (int i = 0; i < AlteredPanels.Count; i++)
             {
-                Panel tmp = Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row)));
+                Panel currentPanel = AlteredPanels[i];
+                var format = Formats[currentPanel.OccupationType];
 
-                return Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row)));
+                Console.SetCursorPosition((Left + currentPanel.Coordinates.Column) * 2, Top + currentPanel.Coordinates.Row);
+                ConsoleOutput.ColorWrite(format.Text, format.BackgroundColor, format.BackgroundColor);
+
+                AlteredPanels.Clear();
             }
         }
     }

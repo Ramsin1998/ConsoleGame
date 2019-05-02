@@ -52,6 +52,8 @@ namespace ConsoleGame
 
             Board board = new Board(100, 50);
 
+            board.Print(5, 5);
+
             board[2, 3].OccupationType = OccupationType.Player;
             board[3, 3].OccupationType = OccupationType.Player;
             board[4, 3].OccupationType = OccupationType.Player;
@@ -61,11 +63,12 @@ namespace ConsoleGame
             board[4, 6].OccupationType = OccupationType.Enemy;
             board[4, 7].OccupationType = OccupationType.Enemy;
             board[4, 8].OccupationType = OccupationType.Enemy;
+
             board[99, 49].OccupationType = OccupationType.Enemy;
 
             Console.ReadLine();
 
-            board.Print(5, 5);
+            board.Update();
 
             Console.ReadLine();
         }
