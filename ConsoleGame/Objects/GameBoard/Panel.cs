@@ -10,7 +10,27 @@ namespace ConsoleGame.Objects.GameBoard
 {
     class Panel
     {
-        public OccupationType OccupationType { get; set; }
+        private OccupationType occupationType;
+
+        public OccupationType OccupationType
+        {
+            get { return occupationType; }
+            
+            set
+            {
+                //if (occupationType == OccupationType.Enemy && value == OccupationType.Player || occupationType == OccupationType.Player && value == OccupationType.Enemy)
+                //{
+
+                //}
+
+                if (value != occupationType)
+                {
+                    occupationType = value;
+                    Board.AlteredPanels.Add(this);
+                }
+            }
+        }
+
         public Coordinates Coordinates { get; set; }
 
         public Panel(int column, int row)

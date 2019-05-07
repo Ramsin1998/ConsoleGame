@@ -12,7 +12,6 @@ namespace ConsoleGame.Utilities
         {
             Console.BackgroundColor = backgroundColor;
             Console.Write(text);
-            Console.ResetColor();
         }
 
         public static void ColorWrite(string text, ConsoleColor backgroundColor, ConsoleColor foregroundColor)
@@ -20,7 +19,6 @@ namespace ConsoleGame.Utilities
             Console.BackgroundColor = backgroundColor;
             Console.ForegroundColor = foregroundColor;
             Console.Write(text);
-            Console.ResetColor();
         }
     }
 }

@@ -12,24 +12,48 @@ namespace ConsoleGame.Objects.GameBoard
 {
     class Board
     {
-        public Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
+        public static int MaxRows = 64;
+        public static int MaxColumns = 116;
+        public static Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
+        public static List<Panel> AlteredPanels { get; set; }
+
+        public List<BoardObject> ObjectsToBeCleared { get; set; }
+        public List<BoardObject> ObjectsToBeRendered { get; set; }
         public List<Panel> Panels { get; set; }
-        public List<Panel> AlteredPanels { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
         public int Left { get; set; }
         public int Top { get; set; }
 
-        public Board(int columns, int rows)
+        public Board()
+        {
+            Rows = 64;
+            Columns = 116;
+            Left = 2;
+            Top = 2;
+
+            constructorScript();
+        }
+
+        public Board(int columns, int rows, int left, int top)
         {
             Rows = rows;
             Columns = columns;
+            Left = left;
+            Top = top;
 
+            constructorScript();
+        }
+
+        private void constructorScript()
+        {
             Panels = new List<Panel>();
             AlteredPanels = new List<Panel>();
+            ObjectsToBeRendered = new List<BoardObject>();
+            ObjectsToBeCleared = new List<BoardObject>();
 
-            for (int y = 0; y < rows; y++)
-                for (int x = 0; x < columns; x++)
+            for (int y = 0; y < Rows; y++)
+                for (int x = 0; x < Columns; x++)
                     Panels.Add(new Panel(x, y));
 
             var enumValues = Enum.GetValues(typeof(OccupationType));
@@ -45,76 +69,79 @@ namespace ConsoleGame.Objects.GameBoard
 
         public Panel this[int column, int row]
         {
-            get
-            {
-                Panel tmp = Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row)));
-
-                AlteredPanels.Add(tmp);
-
-                return Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row)));
-            }
+            get { return Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row))); }
         }
 
-        public void Print(int left, int top)
+        public void Print(bool firstTime = false)
         {
-            Left = left;
-            Top = top;
-
-            ObjectCache cache = MemoryCache.Default;
-            CacheItem contents = cache.GetCacheItem("formats");
-
-            StringBuilder stringBuilder = new StringBuilder(Columns * 2);
+            StringBuilder stringBuilder = new StringBuilder(AlteredPanels.Count);
             Panel currentPanel;
-            Panel nextPanel;
             int count = 1;
 
-            Console.BackgroundColor = Formats[OccupationType.Neutral].BackgroundColor;
-            Console.Clear();
-
-            for (int y = 0; y < Rows; y++)
+            if (firstTime)
             {
-                Console.SetCursorPosition(left * 2, top + y);
+                Console.BackgroundColor = Formats[OccupationType.Neutral].BackgroundColor;
+                Console.Clear();
+            }
 
-                for (int x = 0; x < Columns; x++)
-                {
-                    currentPanel = this[x, y];
+            for (int i = 0; i < AlteredPanels.Count; i++)
+            {
+                currentPanel = AlteredPanels[i];
 
-                    if (currentPanel.OccupationType == OccupationType.Neutral)
-                        continue;
-
-                    nextPanel = x == Columns + 1 ? null : this[x + 1, y];
-
-                    if (nextPanel != null && currentPanel.OccupationType == nextPanel.OccupationType)
+                if (i != AlteredPanels.Count - 1 && AlteredPanels[i + 1].Coordinates.Column == currentPanel.Coordinates.Column + 1 && AlteredPanels[i + 1].OccupationType == currentPanel.OccupationType)
                         count++;
+
+                else
+                {
+                    var format = Formats[currentPanel.OccupationType];
+
+                    Console.SetCursorPosition((Left + currentPanel.Coordinates.Column - count + 1) * 2, Top + currentPanel.Coordinates.Row);
+
+                    for (; count > 0; count--)
+                        stringBuilder.Append(format.Text);
+
+                    ConsoleOutput.ColorWrite(stringBuilder.ToString(), format.BackgroundColor, format.ForegroundColor);
+
+                    stringBuilder.Clear();
+                    count = 1;
+                }
+            }
+
+            AlteredPanels.Clear();
+        }
+
+        public void RenderObjects()
+        {
+            for (int i = 0; i < ObjectsToBeRendered.Count; i++)
+            {
+                BoardObject obj = ObjectsToBeRendered[i];
+
+                RenderObject(obj, true);
+
+                RenderObject(obj);
+            }
+
+            ObjectsToBeRendered.Clear();
+        }
+
+        public void RenderObject(BoardObject obj, bool clear = false)
+        {
+            for (int y = 0; y < obj.Style.Height; y++)
+            {
+                for (int x = 0; x < obj.Style.Width; x++)
+                {
+                    if (obj.Style.Texture[y * obj.Style.Width + x] != '*')
+                        continue;
 
                     else
                     {
-                        var format = Formats[currentPanel.OccupationType];
+                        if (clear)
+                            this[x + obj.PreviousColumn, y + obj.PreviousRow].OccupationType = OccupationType.Neutral;
 
-                        for (; count != 0; count--)
-                            stringBuilder.Append(format.Text);
-
-                        ConsoleOutput.ColorWrite(stringBuilder.ToString(), format.BackgroundColor);
-
-                        stringBuilder.Clear();
-
-                        count = 1;
-                    }                 
+                        else
+                            this[x + obj.Column, y + obj.Row].OccupationType = obj.OccupationType;
+                    }
                 }
-            }
-        }
-
-        public void Update()
-        {
-            for (int i = 0; i < AlteredPanels.Count; i++)
-            {
-                Panel currentPanel = AlteredPanels[i];
-                var format = Formats[currentPanel.OccupationType];
-
-                Console.SetCursorPosition((Left + currentPanel.Coordinates.Column) * 2, Top + currentPanel.Coordinates.Row);
-                ConsoleOutput.ColorWrite(format.Text, format.BackgroundColor, format.BackgroundColor);
-
-                AlteredPanels.Clear();
             }
         }
     }

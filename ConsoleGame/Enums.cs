@@ -9,7 +9,7 @@ namespace ConsoleGame
 {
     public enum OccupationType
     {
-        [ConsoleOutputFormat("  ", ConsoleColor.Yellow)]
+        [ConsoleOutputFormat("  ", ConsoleColor.Black)]
         Neutral,
 
         [ConsoleOutputFormat("  ", ConsoleColor.White)]

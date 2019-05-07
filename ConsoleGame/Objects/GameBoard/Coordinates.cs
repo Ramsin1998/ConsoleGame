@@ -19,7 +19,7 @@ namespace ConsoleGame.Objects.GameBoard
 
         public override bool Equals(object obj)
         {
-            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
                 return false;
 
             else
