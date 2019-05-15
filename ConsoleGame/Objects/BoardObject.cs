@@ -34,7 +34,7 @@ namespace ConsoleGame.Objects
 
                     column = value;
 
-                    Board.ObjectsToBeRendered.Add(this);
+                    Board.ObjectsToBeUpdated.Add(this);
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace ConsoleGame.Objects
 
                     row = value;
 
-                    Board.ObjectsToBeRendered.Add(this);
+                    Board.ObjectsToBeUpdated.Add(this);
                 }
             }
         }
@@ -71,7 +71,7 @@ namespace ConsoleGame.Objects
         {
             Board = board;
             Style = style;
-            Board.ObjectsToBeRendered.Add(this);
+            Board.ObjectsToBeUpdated.Add(this);
         }
 
         virtual public void Move() { }

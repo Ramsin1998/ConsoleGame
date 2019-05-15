@@ -17,8 +17,7 @@ namespace ConsoleGame.Objects.GameBoard
         public static Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
         public static List<Panel> AlteredPanels { get; set; }
 
-        public List<BoardObject> ObjectsToBeCleared { get; set; }
-        public List<BoardObject> ObjectsToBeRendered { get; set; }
+        public List<BoardObject> ObjectsToBeUpdated { get; set; }
         public List<Panel> Panels { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
@@ -49,8 +48,7 @@ namespace ConsoleGame.Objects.GameBoard
         {
             Panels = new List<Panel>();
             AlteredPanels = new List<Panel>();
-            ObjectsToBeRendered = new List<BoardObject>();
-            ObjectsToBeCleared = new List<BoardObject>();
+            ObjectsToBeUpdated = new List<BoardObject>();
 
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
@@ -72,7 +70,7 @@ namespace ConsoleGame.Objects.GameBoard
             get { return Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row))); }
         }
 
-        public void Print(bool firstTime = false)
+        public void Render(bool firstTime = false)
         {
             StringBuilder stringBuilder = new StringBuilder(AlteredPanels.Count);
             Panel currentPanel;
@@ -110,21 +108,21 @@ namespace ConsoleGame.Objects.GameBoard
             AlteredPanels.Clear();
         }
 
-        public void RenderObjects()
+        public void UpdateObjects()
         {
-            for (int i = 0; i < ObjectsToBeRendered.Count; i++)
+            for (int i = 0; i < ObjectsToBeUpdated.Count; i++)
             {
-                BoardObject obj = ObjectsToBeRendered[i];
+                BoardObject obj = ObjectsToBeUpdated[i];
 
-                RenderObject(obj, true);
+                UpdateObject(obj, true);
 
-                RenderObject(obj);
+                UpdateObject(obj);
             }
 
-            ObjectsToBeRendered.Clear();
+            ObjectsToBeUpdated.Clear();
         }
 
-        public void RenderObject(BoardObject obj, bool clear = false)
+        public void UpdateObject(BoardObject obj, bool clear = false)
         {
             for (int y = 0; y < obj.Style.Height; y++)
             {

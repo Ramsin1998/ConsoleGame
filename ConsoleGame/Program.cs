@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using ConsoleGame.Objects.GameBoard;
 using ConsoleGame.Objects;
 using ConsoleGame.Extensions;
+using System.Timers;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace ConsoleGame
 {
@@ -29,49 +32,19 @@ namespace ConsoleGame
             return num % 2 == 0 ? true : false;
         }
 
+        [STAThread]
         static void Main(string[] args)
         {
             intro();
 
-            //while (true)
-            //{
-            //    if (Console.KeyAvailable)
-            //        switch (Console.ReadKey(true).Key)
-            //        {
-            //            case ConsoleKey.UpArrow:
-            //                Console.WriteLine("UP");
-            //                break;
-
-            //            case ConsoleKey.DownArrow:
-            //                Console.WriteLine("DOWN");
-            //                break;
-
-            //            case ConsoleKey.LeftArrow:
-            //                Console.WriteLine("LEFT");
-            //                break;
-
-            //            case ConsoleKey.RightArrow:
-            //                Console.WriteLine("RIGHT");
-            //                break;
-            //        }
-            //}
-
             Board board = new Board();
 
-            board.Print(true);
+            board.Render(true);
 
-            string x = "**********" +
-                       "*        *" +
-                       "*        *" +
-                       "*        *" +
-                       "*        *" +
-                       "*        *" +
-                       "*        *" +
-                       "*        *" +
-                       "*        *" +
-                       "**********";
+            Style styleP = new Style("***" +
+                                     "* *" +
+                                     "***", 3, 3);
 
-            Style styleP = new Style(x, 10, 10);
             Style styleE = new Style("*", 1, 1);
 
             Player player = new Player(0, 0, board, styleP);
@@ -79,11 +52,17 @@ namespace ConsoleGame
 
             while (true)
             {
-                board.RenderObjects();
-                board.Print();
 
                 player.Move();
                 enemy.Move();
+
+                board.UpdateObjects();
+
+                System.Threading.Thread.Sleep(1);
+
+                board.Render();
+
+                System.Threading.Thread.Sleep(40);
             }
 
             //while (true)
@@ -125,8 +104,6 @@ namespace ConsoleGame
             //01 11 21 31 41 51
             //02 12 22 32 42 52
             //03 13 23 33 42 53
-
-            Console.ReadLine();
         }
     }
 }
