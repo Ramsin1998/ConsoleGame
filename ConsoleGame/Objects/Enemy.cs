@@ -13,44 +13,51 @@ namespace ConsoleGame.Objects
         public int DeltaX { get; set; }
         public int DeltaY { get; set; }
 
-        public Enemy(int column, int row, Board board, Style style, Player player) : base(column, row, board, style)
+        public Enemy(Board board, Style style, Player player) : base(board, style)
         {
             OccupationType = OccupationType.Enemy;
+
             Player = player;
+            
+
+            Column = 100;
+            Row = 50;
         }
 
         public override void Move()
         {
-            DeltaX = Player.Coordinates.Column - coordinates.Column;
-            DeltaY = Player.Coordinates.Row - coordinates.Row;
+            DeltaX = Player.Column - column;
+            DeltaY = Player.Row - row;
             int absDeltaX = Math.Abs(DeltaX);
             int absDeltaY = Math.Abs(DeltaY);
-
-            int column = coordinates.Column;
-            int row = coordinates.Row;
 
             void moveX()
             {
                 if (DeltaX > 0)
-                    column += 1;
+                    Column += Style.Width;
 
                 else
-                    column -= 1;
+                    Column -= Style.Width;
             }
 
             void moveY()
             {
                 if (DeltaY > 0)
-                    row += 1;
+                    Row += Style.Height;
 
                 else
-                    row -= 1;
+                    Row -= Style.Height;
             }
 
             if (absDeltaX == absDeltaY)
             {
-                moveX();
-                moveY();
+                bool coinFlip = new Random().Next(0, 1000) < 500 ? true : false;
+
+                if (coinFlip)
+                    moveX();
+
+                else
+                    moveY();
             }
 
             else if (absDeltaX > absDeltaY)
@@ -58,10 +65,6 @@ namespace ConsoleGame.Objects
 
             else
                 moveY();
-
-            Coordinates = new Coordinates(column, row);
-
-            base.Move();
         }
     }
 }

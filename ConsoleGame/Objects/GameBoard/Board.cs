@@ -134,10 +134,10 @@ namespace ConsoleGame.Objects.GameBoard
                     else
                     {
                         if (clear)
-                            this[x + obj.PreviousCoordinates.Column, y + obj.PreviousCoordinates.Row].OccupationType = OccupationType.Neutral;
+                            this[x + obj.PreviousColumn, y + obj.PreviousRow].OccupationType = OccupationType.Neutral;
 
                         else
-                            this[x + obj.Coordinates.Column, y + obj.Coordinates.Row].OccupationType = obj.OccupationType;
+                            this[x + obj.Column, y + obj.Row].OccupationType = obj.OccupationType;
                     }
                 }
             }

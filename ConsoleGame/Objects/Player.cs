@@ -10,31 +10,49 @@ namespace ConsoleGame.Objects
 {
     class Player : BoardObject
     {
-        public Player(int column, int row, Board board, Style style) : base(column, row, board, style)
+
+
+        public Player(int column, int row, Board board, Style style) : base(board, style)
         {
             OccupationType = OccupationType.Player;
+            Column = column * Style.Width;
+            Row = row * Style.Height;
         }
 
+        [STAThread]
         public override void Move()
         {
-            int column = coordinates.Column;
-            int row = coordinates.Row;
+            if (Keyboard.IsKeyDown(Key.Up))
+                Row -= 1;
 
-            if (Keyboard.IsKeyDown(Key.Up) && row != 0)
-                row -= 1;
+            else if (Keyboard.IsKeyDown(Key.Down))
+                Row += 1;
 
-            if (Keyboard.IsKeyDown(Key.Down) && row != Board.Rows - Style.Height - 1)
-                row += 1;
+            else if (Keyboard.IsKeyDown(Key.Left))
+                Column -= 1;
 
-            if (Keyboard.IsKeyDown(Key.Left) && column != 0)
-                column -= 1;
+            else if (Keyboard.IsKeyDown(Key.Right))
+                Column += 1;
 
-            if (Keyboard.IsKeyDown(Key.Right) && column != Board.Columns - Style.Width - 1)
-                column += 1;
+            //while (Console.KeyAvailable)
+            //    switch (Console.ReadKey(true).Key)
+            //    {
+            //        case ConsoleKey.UpArrow:
+            //            Row -= Style.Height;
+            //            break;
 
-            Coordinates = new Coordinates(column, row);
+            //        case ConsoleKey.DownArrow:
+            //            Row += Style.Height;
+            //            break;
 
-            base.Move();
+            //        case ConsoleKey.LeftArrow:
+            //            Column -= Style.Width;
+            //            break;
+
+            //        case ConsoleKey.RightArrow:
+            //            Column += Style.Width;
+            //            break;
+            //    }
         }
     }
 }
