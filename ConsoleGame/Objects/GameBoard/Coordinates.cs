@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleGame.Objects.GameBoard
 {
-    class Coordinates
+    struct Coordinates
     {
         public int Row { get; set; }
         public int Column { get ; set; }

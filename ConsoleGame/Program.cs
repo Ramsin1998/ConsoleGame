@@ -41,28 +41,40 @@ namespace ConsoleGame
 
             board.Render(true);
 
-            Style styleP = new Style("***" +
-                                     "* *" +
-                                     "***", 3, 3);
+            Style styleP = new Style("**********" +
+                                     "*   **   *" +
+                                     "* * ** * *" +
+                                     "*   **   *" +
+                                     "**********" +
+                                     "**********" +
+                                     "**      **" +
+                                     "** **** **" +
+                                     "**      **" +
+                                     "**********", 10, 10);
 
-            Style styleE = new Style("*", 1, 1);
+            Style styleE = new Style("**********" +
+                                     "*   **   *" +
+                                     "* * ** * *" +
+                                     "*   **   *" +
+                                     "**********" +
+                                     "**********" +
+                                     "**      **" +
+                                     "** **** **" +
+                                     "**      **" +
+                                     "**********", 10, 10);
 
-            Player player = new Player(0, 0, board, styleP);
-            Enemy enemy = new Enemy(board, styleE, player);
+            Player player = new Player(5, 5, board, styleP);
+            Enemy enemy = new Enemy(100, 50, board, styleE, player);
 
             while (true)
             {
-
                 player.Move();
                 enemy.Move();
 
                 board.UpdateObjects();
 
-                System.Threading.Thread.Sleep(1); Console.WriteLine();
-
                 board.Render();
 
-                System.Threading.Thread.Sleep(40);
             }
 
             //while (true)

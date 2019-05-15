@@ -9,71 +9,36 @@ namespace ConsoleGame.Objects
 {
     abstract class BoardObject
     {
-        public int PreviousColumn;
-        public int PreviousRow;
+        protected Coordinates coordinates;
 
-        protected int column;
-        protected int row;
-
-        public int Column
-        {
-            get { return column; }
-
-            set
-            {
-                if (value < 0)
-                    Column = 0;
-
-                else if (value + Style.Width > Board.Columns)
-                    Column = Board.Columns - Style.Width;
-
-                else
-                {
-                    PreviousColumn = column;
-                    PreviousRow = row;
-
-                    column = value;
-
-                    Board.ObjectsToBeUpdated.Add(this);
-                }
-            }
-        }
-
-        public int Row
-        {
-            get { return row; }
-
-            set
-            {
-                if (value < 0)
-                    Row = 0;
-
-                else if (value + Style.Height > Board.Rows)
-                    Row = Board.Rows - Style.Height;
-
-                else
-                {
-                    PreviousRow = row;
-                    PreviousColumn = column;
-
-                    row = value;
-
-                    Board.ObjectsToBeUpdated.Add(this);
-                }
-            }
-        }
-
+        public Coordinates PreviousCoordinates { get; set; }
         public OccupationType OccupationType { get; set; }
         public Style Style { get; set; }
         public Board Board { get; set; }
 
-        protected BoardObject(Board board, Style style)
+        public Coordinates Coordinates
         {
+            get { return coordinates; }
+
+            set
+            {
+                PreviousCoordinates = coordinates;
+
+                coordinates = value;
+            }
+        }
+
+        protected BoardObject(int column, int row, Board board, Style style)
+        {
+            Coordinates = new Coordinates(column, row);
             Board = board;
             Style = style;
             Board.ObjectsToBeUpdated.Add(this);
         }
 
-        virtual public void Move() { }
+        virtual public void Move()
+        {
+            Board.ObjectsToBeUpdated.Add(this);
+        }
     }
 }
