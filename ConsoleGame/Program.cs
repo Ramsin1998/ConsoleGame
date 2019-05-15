@@ -69,7 +69,7 @@ namespace ConsoleGame
             while (true)
             {
                 player.Move();
-                enemy.Move();
+                //enemy.Move();
 
                 board.UpdateObjects();
 

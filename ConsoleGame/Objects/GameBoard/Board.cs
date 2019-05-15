@@ -67,7 +67,7 @@ namespace ConsoleGame.Objects.GameBoard
 
         public Panel this[int column, int row]
         {
-            get { return Panels.Find(p => p.Coordinates.Equals(new Coordinates(column, row))); }
+            get { return Panels[row * Columns + column]; }
         }
 
         public void Render(bool firstTime = false)
