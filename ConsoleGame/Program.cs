@@ -58,7 +58,7 @@ namespace ConsoleGame
 
                 board.UpdateObjects();
 
-                System.Threading.Thread.Sleep(1);
+                System.Threading.Thread.Sleep(1); Console.WriteLine();
 
                 board.Render();
 
