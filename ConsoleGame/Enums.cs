@@ -24,4 +24,15 @@ namespace ConsoleGame
         [ConsoleOutputFormat("  ", ConsoleColor.Red)]
         Enemy
     }
+
+    public enum Quadrant
+    {
+        UpperLeft,
+
+        UpperRight,
+
+        LowerRight,
+
+        LowerLeft
+    }
 }

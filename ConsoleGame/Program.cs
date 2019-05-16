@@ -9,6 +9,8 @@ using ConsoleGame.Extensions;
 using System.Timers;
 using System.Diagnostics;
 using System.Windows.Input;
+using System.IO;
+using ConsoleGame.Objects.BoardObjects;
 
 namespace ConsoleGame
 {
@@ -37,45 +39,77 @@ namespace ConsoleGame
         {
             intro();
 
-            Board board = new Board();
-
-            board.Render(true);
-
-            Style styleP = new Style("**********" +
-                                     "*   **   *" +
-                                     "* * ** * *" +
-                                     "*   **   *" +
-                                     "**********" +
-                                     "**********" +
-                                     "**      **" +
-                                     "** **** **" +
-                                     "**      **" +
-                                     "**********", 10, 10);
-
-            Style styleE = new Style("**********" +
-                                     "*   **   *" +
-                                     "* * ** * *" +
-                                     "*   **   *" +
-                                     "**********" +
-                                     "**********" +
-                                     "**      **" +
-                                     "** **** **" +
-                                     "**      **" +
-                                     "**********", 10, 10);
-
-            Player player = new Player(5, 5, board, styleP);
-            Enemy enemy = new Enemy(100, 50, board, styleE, player);
+            Style styleG = new Style("****" +
+                                     "****" +
+                                     "****" +
+                                     "****", 4, 4);
 
             while (true)
             {
-                player.Move();
-                //enemy.Move();
+                Board board = new Board();
+
+                Goal goal = new Goal(board, styleG);
 
                 board.UpdateObjects();
 
                 board.Render();
 
+                Console.ReadLine();
             }
+
+            //Board board = new Board();
+
+            //board.Render(true);
+
+            //Style styleP = new Style("*****" +
+            //                         "*   *" +
+            //                         "* * *" +
+            //                         "*   *" +
+            //                         "*****", 5, 5);
+
+            //Style styleE = new Style("**********" +
+            //                         "*   **   *" +
+            //                         "* * ** * *" +
+            //                         "*   **   *" +
+            //                         "**********" +
+            //                         "**********" +
+            //                         "**      **" +
+            //                         "** **** **" +
+            //                         "**      **" +
+            //                         "**********", 10, 10);
+
+            //Style styleG = new Style("****" +
+            //                         "****" +
+            //                         "****" +
+            //                         "****", 4, 4);
+
+            //Player player = new Player(5, 5, 50, board, styleP);
+            //Enemy enemy = new Enemy(100, 50, 500, board, styleE, player);
+            //Goal goal = new Goal(board, styleG);
+
+            //DateTime now = new DateTime();
+            //DateTime previous = new DateTime();
+            //TimeSpan elapsed = new TimeSpan();
+            //int wait = 0;
+
+            //while (true)
+            //{
+            //    previous = now;
+            //    now = DateTime.Now;
+            //    elapsed = now - previous;
+
+            //    player.Move();
+            //    enemy.Move();
+
+            //    board.UpdateObjects();
+
+            //    wait = 16 - elapsed.Milliseconds;
+
+            //    if (!(wait < 0))
+            //        System.Threading.Thread.Sleep(wait);
+
+            //    board.Render();
+            //}
 
             //while (true)
             //{

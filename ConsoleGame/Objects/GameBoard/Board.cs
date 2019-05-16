@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using ConsoleGame.Extensions;
 using ConsoleGame.Utilities;
 using System.Runtime.Caching;
+using ConsoleGame.Objects.BoardObjects;
 
 namespace ConsoleGame.Objects.GameBoard
 {
     class Board
     {
-        public static int MaxRows = 64;
-        public static int MaxColumns = 116;
+        public static readonly int MaxRows = 64;
+        public static readonly int MaxColumns = 116;
         public static Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
         public static List<Panel> AlteredPanels { get; set; }
 
@@ -23,7 +24,7 @@ namespace ConsoleGame.Objects.GameBoard
         public int Columns { get; set; }
         public int Left { get; set; }
         public int Top { get; set; }
-
+        
         public Board()
         {
             Rows = 64;

@@ -10,7 +10,10 @@ namespace ConsoleGame.Objects
     {
         public Game()
         {
+            for (int i = 0; true; i++)
+            {
 
+            }
         }
     }
 }
