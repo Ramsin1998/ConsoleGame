@@ -48,13 +48,12 @@ namespace ConsoleGame
             {
                 Board board = new Board();
 
-                Goal goal = new Goal(board, styleG);
+                Goal goal = new Goal(2, board, styleG);
 
                 board.UpdateObjects();
 
                 board.Render();
 
-                Console.ReadLine();
             }
 
             //Board board = new Board();

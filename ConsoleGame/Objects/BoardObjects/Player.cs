@@ -23,6 +23,15 @@ namespace ConsoleGame.Objects.BoardObjects
             OccupationType = OccupationType.Player;
         }
 
+        public Player(int speed, Board board, Style style) : base(board, style)
+        {
+            Coordinates = new Coordinates(column, row);
+            SW = new Stopwatch();
+            SW.Start();
+            Speed = speed;
+            OccupationType = OccupationType.Player;
+        }
+
         public override void Move()
         {
             if (!(SW.ElapsedMilliseconds > Speed))

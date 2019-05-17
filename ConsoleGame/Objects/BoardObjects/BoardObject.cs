@@ -36,6 +36,14 @@ namespace ConsoleGame.Objects.BoardObjects
             Board.ObjectsToBeUpdated.Add(this);
         }
 
+        protected BoardObject(int column, int row, Board board, Style style)
+        {
+            Coordinates = new Coordinates(column, row);
+            Board = board;
+            Style = style;
+            Board.ObjectsToBeUpdated.Add(this);
+        }
+
         virtual public void Move()
         {
             Board.ObjectsToBeUpdated.Add(this);

@@ -9,12 +9,12 @@ namespace ConsoleGame.Objects.BoardObjects
 {
     class Goal : BoardObject
     {
-        public Goal(Board board, Style style) : base(board, style)
+        public Goal(int quadrantRatio, Board board, Style style) : base(board, style)
         {
             OccupationType = OccupationType.Goal;
             Random rng = new Random();
             Quadrant = (Quadrant)(rng.Next(4));
-            RandomizeQuadrant(2);
+            RandomizeQuadrant(quadrantRatio);
         }
     }
 }
