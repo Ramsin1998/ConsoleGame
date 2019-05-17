@@ -41,33 +41,35 @@ namespace ConsoleGame
 
             board.Render(true);
 
-            Style styleP = new Style("*****" +
-                                     "*   *" +
-                                     "* * *" +
-                                     "*   *" +
-                                     "*****", 5, 5);
+            Style styleP = new Style("**********" +
+                                     "*   **   *" +
+                                     "* * ** * *" +
+                                     "*   **   *" +
+                                     "**********" +
+                                     "**********" +
+                                     "**      **" +
+                                     "** **** **" +
+                                     "**      **" +
+                                     "**********", 10, 10);
 
-            Style styleE = new Style("*****" +
-                                     "*   *" +
-                                     "* * *" +
-                                     "*   *" +
-                                     "*****", 5, 5);
+            Style styleE = new Style("**********" +
+                                     "*   **   *" +
+                                     "* * ** * *" +
+                                     "*   **   *" +
+                                     "**********" +
+                                     "**********" +
+                                     "**      **" +
+                                     "** **** **" +
+                                     "**      **" +
+                                     "**********", 10, 10);
 
             Player player = new Player(5, 5, board, styleP);
-            Enemy enemy = new Enemy(50, 50, board, styleE, player);
-            Enemy enemy2 = new Enemy(10, 30, board, styleE, player);
-            Enemy enemy3 = new Enemy(90, 55, board, styleE, player);
-            Enemy enemy4 = new Enemy(105, 40, board, styleE, player);
-            Enemy enemy5 = new Enemy(50, 20, board, styleE, player);
+            Enemy enemy = new Enemy(100, 50, board, styleE, player);
 
             while (true)
             {
                 player.Move();
-                enemy.Move();
-                enemy2.Move();
-                enemy3.Move();
-                enemy4.Move();
-                enemy5.Move();
+                //enemy.Move();
 
                 board.UpdateObjects();
 
