@@ -64,13 +64,14 @@
     <Compile Include="Attributes.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
-    <Compile Include="Objects\BoardObject.cs" />
-    <Compile Include="Objects\Enemy.cs" />
+    <Compile Include="Objects\BoardObjects\BoardObject.cs" />
+    <Compile Include="Objects\BoardObjects\Enemy.cs" />
     <Compile Include="Objects\Game.cs" />
     <Compile Include="Objects\GameBoard\Board.cs" />
     <Compile Include="Objects\GameBoard\Coordinates.cs" />
+    <Compile Include="Objects\BoardObjects\Goal.cs" />
     <Compile Include="Objects\GameBoard\Panel.cs" />
-    <Compile Include="Objects\Player.cs" />
+    <Compile Include="Objects\BoardObjects\Player.cs" />
     <Compile Include="Objects\Round.cs" />
     <Compile Include="Objects\Style.cs" />
     <Compile Include="Program.cs" />
@@ -92,5 +93,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

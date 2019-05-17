@@ -5,18 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using ConsoleGame.Objects.GameBoard;
 using System.Windows.Input;
+using System.Diagnostics;
 
-namespace ConsoleGame.Objects
+namespace ConsoleGame.Objects.BoardObjects
 {
     class Player : BoardObject
     {
-        public Player(int column, int row, Board board, Style style) : base(column, row, board, style)
+        public Stopwatch SW { get; set; }
+        public int Speed { get; set; }
+
+        public Player(int column, int row, int speed, Board board, Style style) : base(board, style)
         {
+            Coordinates = new Coordinates(column, row);
+            SW = new Stopwatch();
+            SW.Start();
+            Speed = speed;
             OccupationType = OccupationType.Player;
         }
 
         public override void Move()
         {
+            if (!(SW.ElapsedMilliseconds > Speed))
+                return;
+
+            SW.Restart();
+
             int column = coordinates.Column;
             int row = coordinates.Row;
 
