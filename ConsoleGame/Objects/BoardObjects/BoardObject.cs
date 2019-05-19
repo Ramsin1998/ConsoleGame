@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleGame.Objects.GameBoard;
+using System.Diagnostics;
 
 namespace ConsoleGame.Objects.BoardObjects
 {
-    abstract class BoardObject
+    public abstract class BoardObject
     {
         protected Coordinates coordinates;
 
@@ -16,6 +17,8 @@ namespace ConsoleGame.Objects.BoardObjects
         public Quadrant Quadrant { get; set; }
         public Style Style { get; set; }
         public Board Board { get; set; }
+        public Stopwatch SW { get; set; }
+        public int Speed { get; set; }
 
         public Coordinates Coordinates
         {
@@ -33,28 +36,36 @@ namespace ConsoleGame.Objects.BoardObjects
         {
             Board = board;
             Style = style;
-            Board.ObjectsToBeUpdated.Add(this);
         }
 
         protected BoardObject(int column, int row, Board board, Style style)
         {
+            if (column < 0)
+                column = 0;
+
+            else if (column > board.Columns - style.Width - 1)
+                column = board.Columns - style.Width - 1;
+
+            if (row < 0)
+                row = 0;
+
+            else if (row > board.Rows - style.Height - 1)
+                row = board.Rows - style.Height - 1;
+
             Coordinates = new Coordinates(column, row);
             Board = board;
             Style = style;
-            Board.ObjectsToBeUpdated.Add(this);
         }
 
-        virtual public void Move()
-        {
-            Board.ObjectsToBeUpdated.Add(this);
-        }
+        virtual public void Move() { }
 
-        protected void RandomizeQuadrant(int quadrantRatio)
+        protected void RandomizeQuadrantPosition(int quadrantRatio)
         {
             Random rng = new Random();
 
             int xMinValue = 0;
             int xMaxValue = 0;
+
             int yMinValue = 0;
             int yMaxValue = 0;
 
@@ -104,7 +115,7 @@ namespace ConsoleGame.Objects.BoardObjects
             int column = rng.Next(xMinValue, xMaxValue);
             int row = rng.Next(yMinValue, yMaxValue);
 
-            Coordinates = new Coordinates(rng.Next(xMinValue, xMaxValue), rng.Next(yMinValue, yMaxValue));
+            Coordinates = new Coordinates(column, row);
         }
     }
 }

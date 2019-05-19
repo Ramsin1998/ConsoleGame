@@ -63,7 +63,9 @@
   <ItemGroup>
     <Compile Include="Attributes.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Extensions\BoardExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Objects\BoardObjects\Block.cs" />
     <Compile Include="Objects\BoardObjects\BoardObject.cs" />
     <Compile Include="Objects\BoardObjects\Enemy.cs" />
     <Compile Include="Objects\Game.cs" />

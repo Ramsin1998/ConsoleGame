@@ -10,13 +10,20 @@ namespace ConsoleGame.Objects.BoardObjects
 {
     class Enemy : BoardObject
     {
-        public Stopwatch SW { get; set; }
         public Player Player { get; set; }
         public int DeltaX { get; set; }
         public int DeltaY { get; set; }
-        public int Speed { get; set; }
 
-        public Enemy(int column, int row, int speed, Board board, Style style, Player player) : base(board, style)
+        public Enemy(int speed, Board board, Style style, Player player) : base(board, style)
+        {
+            SW = new Stopwatch();
+            SW.Start();
+            Player = player;
+            Speed = speed;
+            OccupationType = OccupationType.Enemy;
+        }
+
+        public Enemy(int column, int row, int speed, Board board, Style style, Player player) : base(column, row, board, style)
         {
             Coordinates = new Coordinates(column, row);
             SW = new Stopwatch();
@@ -73,7 +80,7 @@ namespace ConsoleGame.Objects.BoardObjects
 
             Coordinates = new Coordinates(column, row);
 
-            base.Move();
+            Board.Objects.Add(this);
         }
     }
 }

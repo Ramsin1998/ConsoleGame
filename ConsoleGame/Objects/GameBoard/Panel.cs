@@ -8,7 +8,7 @@ using ConsoleGame.Utilities;
 
 namespace ConsoleGame.Objects.GameBoard
 {
-    class Panel
+    public class Panel
     {
         private OccupationType occupationType;
 
@@ -18,11 +18,6 @@ namespace ConsoleGame.Objects.GameBoard
             
             set
             {
-                //if (occupationType == OccupationType.Enemy && value == OccupationType.Player || occupationType == OccupationType.Player && value == OccupationType.Enemy)
-                //{
-
-                //}
-
                 if (value != occupationType)
                 {
                     occupationType = value;

@@ -19,7 +19,7 @@ namespace ConsoleGame
         Goal,
 
         [ConsoleOutputFormat("  ", ConsoleColor.DarkGray)]
-        BlockedField,
+        Block,
 
         [ConsoleOutputFormat("  ", ConsoleColor.Red)]
         Enemy
@@ -34,5 +34,16 @@ namespace ConsoleGame
         LowerRight,
 
         LowerLeft
+    }
+
+    public enum Collision
+    {
+        Nothing,
+
+        PlayerEnemy,
+
+        PlayerGoal,
+
+        BlockObject
     }
 }

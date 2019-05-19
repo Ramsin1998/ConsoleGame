@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleGame.Objects
 {
-    class Style
+    public class Style
     {
         public string Texture { get; set; }
         public int Width { get; set; }

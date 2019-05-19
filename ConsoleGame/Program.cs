@@ -11,144 +11,149 @@ using System.Diagnostics;
 using System.Windows.Input;
 using System.IO;
 using ConsoleGame.Objects.BoardObjects;
+using System.Runtime.Caching;
 
 namespace ConsoleGame
 {
     class Program
     {
-        static void intro()
+        static void intro(bool fullscreen = false)
         {
-            Console.WriteLine("psst! ...press Alt+Enter!");
+            if (fullscreen)
+            {
+                Console.WriteLine("psst! ...press Alt+Enter!");
 
-            while (true)
-                if (Console.WindowHeight == Console.LargestWindowHeight)
-                    break;
+                while (true)
+                    if (Console.WindowHeight == Console.LargestWindowHeight)
+                        break;
+            }
+
+            else
+            {
+                Console.WriteLine("Adjust the window size to your liking and then press any key :)");
+                Console.ReadKey(true);
+            }
 
             Console.Clear();
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
             Console.CursorVisible = false;
-        }
 
-        static bool isEven(int num)
-        {
-            return num % 2 == 0 ? true : false;
+            Board board = new Board();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            while (sw.Elapsed.Seconds < 4)
+            {
+                Random rng = new Random();
+
+                for (int y = 0; y < board.Rows / 2; y++)
+                {
+                    for (int x = 0; x < board.Columns / 2; x++)
+                    {
+                        int k = rng.Next(1, 5);
+
+                        for (int Y = 0; Y < 1; Y++)
+                        {
+                            for (int X = 0; X < 1; X++)
+                            {
+                                board[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(k);
+                            }
+                        }
+                    }
+                }
+
+                board.Render();
+            }
         }
 
         [STAThread]
         static void Main(string[] args)
         {
-            intro();
+            //object co = Collision.PlayerEnemy;
+
+            //Collision k;
+
+            //k = (Collision)co;
+
+            //Console.WriteLine();
+
+            //Console.ReadLine();
+
+            intro(true);
+
+            Board board = new Board();
+
+            board.Render(true);
+
+            Style styleP = new Style("*****" +
+                                     "*   *" +
+                                     "* * *" +
+                                     "*   *" +
+                                     "*****", 5, 5);
+
+            Style styleE = new Style("*****" +
+                                     "*   *" +
+                                     "* * *" +
+                                     "*   *" +
+                                     "*****", 5, 5);
 
             Style styleG = new Style("****" +
                                      "****" +
                                      "****" +
                                      "****", 4, 4);
 
+            Random rng = new Random();
+
+            Quadrant quadrant = (Quadrant)rng.Next(0, 4);
+
+            Goal goal = new Goal(4, quadrant, board, styleG);
+            Player player = new Player(50, 4, goal, board, styleP);
+            Enemy enemy = new Enemy(50, 50, 500, board, styleE, player);
+
+            board.Objects.Add(goal);
+            board.Objects.Add(player);
+            board.Objects.Add(enemy);
+
+            DateTime now = new DateTime();
+            DateTime previous = new DateTime();
+            TimeSpan elapsed = new TimeSpan();
+            int wait = 0;
+
+            MemoryCache cache = MemoryCache.Default;
+
             while (true)
             {
-                Board board = new Board();
+                previous = now;
+                now = DateTime.Now;
+                elapsed = now - previous;
 
-                Goal goal = new Goal(2, board, styleG);
+                player.Move();
+                enemy.Move();
 
                 board.UpdateObjects();
 
-                board.Render();
+                //object collision = cache.Get("collision");
 
+                //if (collision != null)
+                //    break;
+
+                wait = 16 - elapsed.Milliseconds;
+
+                if (!(wait < 0))
+                    Task.Delay(wait); 
+
+                board.Render();
             }
 
-            //Board board = new Board();
 
-            //board.Render(true);
+            Console.ResetColor();
 
-            //Style styleP = new Style("*****" +
-            //                         "*   *" +
-            //                         "* * *" +
-            //                         "*   *" +
-            //                         "*****", 5, 5);
+            Console.Clear();
 
-            //Style styleE = new Style("**********" +
-            //                         "*   **   *" +
-            //                         "* * ** * *" +
-            //                         "*   **   *" +
-            //                         "**********" +
-            //                         "**********" +
-            //                         "**      **" +
-            //                         "** **** **" +
-            //                         "**      **" +
-            //                         "**********", 10, 10);
+            Console.WriteLine("NOOOOOOOOOOOOOOOOOOOOOO");
 
-            //Style styleG = new Style("****" +
-            //                         "****" +
-            //                         "****" +
-            //                         "****", 4, 4);
-
-            //Player player = new Player(5, 5, 50, board, styleP);
-            //Enemy enemy = new Enemy(100, 50, 500, board, styleE, player);
-            //Goal goal = new Goal(board, styleG);
-
-            //DateTime now = new DateTime();
-            //DateTime previous = new DateTime();
-            //TimeSpan elapsed = new TimeSpan();
-            //int wait = 0;
-
-            //while (true)
-            //{
-            //    previous = now;
-            //    now = DateTime.Now;
-            //    elapsed = now - previous;
-
-            //    player.Move();
-            //    enemy.Move();
-
-            //    board.UpdateObjects();
-
-            //    wait = 16 - elapsed.Milliseconds;
-
-            //    if (!(wait < 0))
-            //        System.Threading.Thread.Sleep(wait);
-
-            //    board.Render();
-            //}
-
-            //while (true)
-            //{
-            //    for (int j = 0; j < 116; j++)
-            //        for (int k = 0; k < j; k++)
-            //        {
-            //            for (int i = 0; i < 64; i++)
-            //                board[j, i].OccupationType = OccupationType.Enemy;
-
-            //            board.Print();
-            //        }
-            //}
-
-            //while (true)
-            //{
-            //    Random rng = new Random();
-
-            //    for (int y = 0; y < board.Rows / 2; y++)
-            //    {
-            //        for (int x = 0; x < board.Columns / 2; x++)
-            //        {
-            //            int k = rng.Next(1, 5);
-
-            //            for (int Y = 0; Y < 1; Y++)
-            //            {
-            //                for (int X = 0; X < 1; X++)
-            //                {
-            //                    board[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(k);
-            //                }
-            //            }
-            //        }
-            //    }
-
-            //    board.Print();
-            //}
-
-            //00 10 20 30 40 50
-            //01 11 21 31 41 51
-            //02 12 22 32 42 52
-            //03 13 23 33 42 53
+            Console.ReadLine();
         }
     }
 }

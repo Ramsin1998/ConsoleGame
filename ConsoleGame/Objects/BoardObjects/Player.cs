@@ -6,24 +6,42 @@ using System.Threading.Tasks;
 using ConsoleGame.Objects.GameBoard;
 using System.Windows.Input;
 using System.Diagnostics;
+using ConsoleGame.Extensions;
 
 namespace ConsoleGame.Objects.BoardObjects
 {
     class Player : BoardObject
     {
-        public Stopwatch SW { get; set; }
-        public int Speed { get; set; }
-
-        public Player(int column, int row, int speed, Board board, Style style) : base(board, style)
+        public Player(int speed, int quadrantRatio, Goal goal, Board board, Style style) : base(board, style)
         {
-            Coordinates = new Coordinates(column, row);
             SW = new Stopwatch();
             SW.Start();
             Speed = speed;
             OccupationType = OccupationType.Player;
+
+            switch (goal.Quadrant)
+            {
+                case Quadrant.UpperLeft:
+                    Quadrant = Quadrant.LowerRight;
+                    break;
+
+                case Quadrant.UpperRight:
+                    Quadrant = Quadrant.LowerLeft;
+                    break;
+
+                case Quadrant.LowerRight:
+                    Quadrant = Quadrant.UpperLeft;
+                    break;
+
+                case Quadrant.LowerLeft:
+                    Quadrant = Quadrant.UpperRight;
+                    break;
+            }
+
+            RandomizeQuadrantPosition(quadrantRatio);
         }
 
-        public Player(int speed, Board board, Style style) : base(board, style)
+        public Player(int column, int row, int speed, Board board, Style style) : base(column, row, board, style)
         {
             Coordinates = new Coordinates(column, row);
             SW = new Stopwatch();
@@ -56,7 +74,10 @@ namespace ConsoleGame.Objects.BoardObjects
 
             Coordinates = new Coordinates(column, row);
 
-            base.Move();
+            if (!Board.UpdateObject(this))
+            {
+
+            }
         }
     }
 }

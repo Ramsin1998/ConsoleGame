@@ -8,17 +8,18 @@ using ConsoleGame.Extensions;
 using ConsoleGame.Utilities;
 using System.Runtime.Caching;
 using ConsoleGame.Objects.BoardObjects;
+using ConsoleGame.Extensions;
 
 namespace ConsoleGame.Objects.GameBoard
 {
-    class Board
+    public class Board
     {
-        public static readonly int MaxRows = 64;
-        public static readonly int MaxColumns = 116;
+        public static readonly int MaxRows = Console.WindowHeight - 4;
+        public static readonly int MaxColumns = (Console.WindowWidth - 5) / 2;
         public static Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
         public static List<Panel> AlteredPanels { get; set; }
 
-        public List<BoardObject> ObjectsToBeUpdated { get; set; }
+        public List<BoardObject> Objects { get; set; }
         public List<Panel> Panels { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
@@ -27,8 +28,8 @@ namespace ConsoleGame.Objects.GameBoard
         
         public Board()
         {
-            Rows = 64;
-            Columns = 116;
+            Rows = MaxRows;
+            Columns = MaxColumns;
             Left = 2;
             Top = 2;
 
@@ -49,7 +50,7 @@ namespace ConsoleGame.Objects.GameBoard
         {
             Panels = new List<Panel>();
             AlteredPanels = new List<Panel>();
-            ObjectsToBeUpdated = new List<BoardObject>();
+            Objects = new List<BoardObject>();
 
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
@@ -111,37 +112,17 @@ namespace ConsoleGame.Objects.GameBoard
 
         public void UpdateObjects()
         {
-            for (int i = 0; i < ObjectsToBeUpdated.Count; i++)
+            for (int i = 0; i < Objects.Count; i++)
             {
-                BoardObject obj = ObjectsToBeUpdated[i];
+                BoardObject obj = Objects[i];
 
-                UpdateObject(obj, true);
+                this.UpdateObject(obj, true);
 
-                UpdateObject(obj);
+                this.UpdateObject(obj);
             }
 
-            ObjectsToBeUpdated.Clear();
+            Objects.Clear();
         }
 
-        public void UpdateObject(BoardObject obj, bool clear = false)
-        {
-            for (int y = 0; y < obj.Style.Height; y++)
-            {
-                for (int x = 0; x < obj.Style.Width; x++)
-                {
-                    if (obj.Style.Texture[y * obj.Style.Width + x] != '*')
-                        continue;
-
-                    else
-                    {
-                        if (clear)
-                            this[x + obj.PreviousCoordinates.Column, y + obj.PreviousCoordinates.Row].OccupationType = OccupationType.Neutral;
-
-                        else
-                            this[x + obj.Coordinates.Column, y + obj.Coordinates.Row].OccupationType = obj.OccupationType;
-                    }
-                }
-            }
-        }
     }
 }
