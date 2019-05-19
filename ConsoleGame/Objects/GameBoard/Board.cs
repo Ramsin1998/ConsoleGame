@@ -8,7 +8,6 @@ using ConsoleGame.Extensions;
 using ConsoleGame.Utilities;
 using System.Runtime.Caching;
 using ConsoleGame.Objects.BoardObjects;
-using ConsoleGame.Extensions;
 
 namespace ConsoleGame.Objects.GameBoard
 {
@@ -17,8 +16,8 @@ namespace ConsoleGame.Objects.GameBoard
         public static readonly int MaxRows = Console.WindowHeight - 4;
         public static readonly int MaxColumns = (Console.WindowWidth - 5) / 2;
         public static Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
-        public static List<Panel> AlteredPanels { get; set; }
 
+        public List<Panel> AlteredPanels { get; set; }
         public List<BoardObject> Objects { get; set; }
         public List<Panel> Panels { get; set; }
         public int Rows { get; set; }
@@ -54,7 +53,7 @@ namespace ConsoleGame.Objects.GameBoard
 
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
-                    Panels.Add(new Panel(x, y));
+                    Panels.Add(new Panel(x, y, this));
 
             var enumValues = Enum.GetValues(typeof(OccupationType));
             Formats = new Dictionary<OccupationType, ConsoleOutputFormat>(enumValues.Length);

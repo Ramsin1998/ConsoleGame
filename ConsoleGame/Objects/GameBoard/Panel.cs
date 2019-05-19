@@ -27,10 +27,12 @@ namespace ConsoleGame.Objects.GameBoard
         }
 
         public Coordinates Coordinates { get; set; }
+        public Board Board { get; set; }
 
-        public Panel(int column, int row)
+        public Panel(int column, int row, Board board)
         {
             Coordinates = new Coordinates(column, row);
+            Board = board;
             OccupationType = OccupationType.Neutral;
         }
     }
