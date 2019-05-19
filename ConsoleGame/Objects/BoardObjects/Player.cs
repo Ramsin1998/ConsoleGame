@@ -61,23 +61,40 @@ namespace ConsoleGame.Objects.BoardObjects
             int row = coordinates.Row;
 
             if (Keyboard.IsKeyDown(Key.Up) && row != 0)
+            {
                 row -= 1;
 
+                if (!Board.Project(this, new Coordinates(column, row)))
+                    row += 1;
+            }
+
             if (Keyboard.IsKeyDown(Key.Down) && row != Board.Rows - Style.Height - 1)
+            {
                 row += 1;
 
+                if (!Board.Project(this, new Coordinates(column, row)))
+                    row -= 1;
+            }
+
             if (Keyboard.IsKeyDown(Key.Left) && column != 0)
+            {
                 column -= 1;
 
+                if (!Board.Project(this, new Coordinates(column, row)))
+                    column += 1;
+            }
+
             if (Keyboard.IsKeyDown(Key.Right) && column != Board.Columns - Style.Width - 1)
+            {
                 column += 1;
+
+                if (!Board.Project(this, new Coordinates(column, row)))
+                    column -= 1;
+            }
 
             Coordinates = new Coordinates(column, row);
 
-            if (!Board.UpdateObject(this))
-            {
-
-            }
+            Board.Objects.Add(this);
         }
     }
 }

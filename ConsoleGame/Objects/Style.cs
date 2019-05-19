@@ -8,13 +8,13 @@ namespace ConsoleGame.Objects
 {
     public class Style
     {
-        public string Texture { get; set; }
+        public string Sprite { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
 
         public Style(string texture, int width, int height)
         {
-            Texture = texture;
+            Sprite = texture;
             Width = width;
             Height = height;
         }

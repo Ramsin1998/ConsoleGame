@@ -123,6 +123,5 @@ namespace ConsoleGame.Objects.GameBoard
 
             Objects.Clear();
         }
-
     }
 }

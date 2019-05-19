@@ -40,10 +40,10 @@ namespace ConsoleGame
     {
         Nothing,
 
-        PlayerEnemy,
+        PlayerXEnemy,
 
-        PlayerGoal,
+        PlayerXGoal,
 
-        BlockObject
+        BlockXPlayer
     }
 }

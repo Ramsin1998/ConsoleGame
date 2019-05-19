@@ -11,7 +11,7 @@ namespace ConsoleGame.Extensions
 {
     public static class BoardExtensions
     {
-        public static bool UpdateObject(this Board board, BoardObject obj, bool clear = false)
+        public static void UpdateObject(this Board board, BoardObject obj, bool clear = false)
         {
             List<Panel> alteredPanelsForThisObject = new List<Panel>();
 
@@ -19,7 +19,7 @@ namespace ConsoleGame.Extensions
             {
                 for (int x = 0; x < obj.Style.Width; x++)
                 {
-                    if (obj.Style.Texture[y * obj.Style.Width + x] != '*')
+                    if (obj.Style.Sprite[y * obj.Style.Width + x] != '*')
                         continue;
 
                     else
@@ -33,14 +33,6 @@ namespace ConsoleGame.Extensions
                         {
                             Collision collision = checkCollision(currentPanel.OccupationType, obj.OccupationType);
 
-                            if (collision == Collision.BlockObject)
-                            {
-                                for (int i = 0; i < alteredPanelsForThisObject.Count; i++)
-                                    alteredPanelsForThisObject[i].OccupationType = OccupationType.Neutral;
-
-                                return false;
-                            }
-
                             if (collision != Collision.Nothing)
                             {
                                 MemoryCache cache = MemoryCache.Default;
@@ -52,7 +44,7 @@ namespace ConsoleGame.Extensions
 
                                 cache.Add("collision", collision, cip);
 
-                                return false;
+                                return;
                             }
 
                             else
@@ -65,6 +57,14 @@ namespace ConsoleGame.Extensions
                     }
                 }
             }
+        }
+
+        public static bool Project(this Board board, BoardObject obj, Coordinates coordinates)
+        {
+            for (int y = 0; y < obj.Style.Height; y++)
+                for (int x = 0; x < obj.Style.Width; x++)
+                    if (board[x + coordinates.Column, y + coordinates.Row].OccupationType == OccupationType.Block)
+                        return false;
 
             return true;
         }
@@ -74,20 +74,29 @@ namespace ConsoleGame.Extensions
             if (collider1 == OccupationType.Player)
             {
                 if (collider2 == OccupationType.Enemy)
-                    return Collision.PlayerEnemy;
+                    return Collision.PlayerXEnemy;
 
                 else if (collider2 == OccupationType.Goal)
-                    return Collision.PlayerGoal;
+                    return Collision.PlayerXGoal;
             }
 
             else if (collider1 == OccupationType.Enemy)
             {
                 if (collider2 == OccupationType.Player)
-                    return Collision.PlayerEnemy;
+                    return Collision.PlayerXEnemy;
             }
 
-            else if (collider1 == OccupationType.Block || collider2 == OccupationType.Block)
-                return Collision.BlockObject;
+            else if (collider1 == OccupationType.Block)
+            {
+                if (collider2 == OccupationType.Player)
+                    return Collision.BlockXPlayer;
+            }
+
+            else if (collider2 == OccupationType.Player)
+            {
+                if (collider1 == OccupationType.Block)
+                    return Collision.BlockXPlayer;
+            }
 
             return Collision.Nothing;
         }

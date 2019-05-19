@@ -110,10 +110,12 @@ namespace ConsoleGame
             Goal goal = new Goal(4, quadrant, board, styleG);
             Player player = new Player(50, 4, goal, board, styleP);
             Enemy enemy = new Enemy(50, 50, 500, board, styleE, player);
+            Block block = new Block(40, 40, board, styleG);
 
             board.Objects.Add(goal);
             board.Objects.Add(player);
             board.Objects.Add(enemy);
+            board.Objects.Add(block);
 
             DateTime now = new DateTime();
             DateTime previous = new DateTime();
