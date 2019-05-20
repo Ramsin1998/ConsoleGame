@@ -63,18 +63,15 @@
   <ItemGroup>
     <Compile Include="Attributes.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="Extensions\BoardExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Objects\BoardObjects\Block.cs" />
     <Compile Include="Objects\BoardObjects\BoardObject.cs" />
     <Compile Include="Objects\BoardObjects\Enemy.cs" />
-    <Compile Include="Objects\Game.cs" />
     <Compile Include="Objects\GameBoard\Board.cs" />
     <Compile Include="Objects\GameBoard\Coordinates.cs" />
     <Compile Include="Objects\BoardObjects\Goal.cs" />
     <Compile Include="Objects\GameBoard\Panel.cs" />
     <Compile Include="Objects\BoardObjects\Player.cs" />
-    <Compile Include="Objects\Round.cs" />
     <Compile Include="Objects\Style.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

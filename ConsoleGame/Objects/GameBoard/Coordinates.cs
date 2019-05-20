@@ -25,8 +25,18 @@ namespace ConsoleGame.Objects.GameBoard
             else
             {
                 Coordinates c = (Coordinates)obj;
-                return (Column == c.Column) && (Row == c.Row);
+                return GetHashCode() == obj.GetHashCode();
             }
+        }
+
+        public static bool operator ==(Coordinates coordinates1, Coordinates coordinates2)
+        {
+            return coordinates1.Equals(coordinates2);
+        }
+
+        public static bool operator !=(Coordinates coordinates1, Coordinates coordinates2)
+        {
+            return !coordinates1.Equals(coordinates2);
         }
 
         public override int GetHashCode() => new { Row, Column }.GetHashCode();

@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ConsoleGame.Objects.GameBoard;
 using ConsoleGame.Objects;
-using ConsoleGame.Extensions;
-using System.Timers;
-using System.Diagnostics;
-using System.Windows.Input;
-using System.IO;
 using ConsoleGame.Objects.BoardObjects;
 using System.Runtime.Caching;
+using ConsoleGame.Extensions;
 
 namespace ConsoleGame
 {
@@ -38,84 +31,77 @@ namespace ConsoleGame
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
             Console.CursorVisible = false;
 
-            Board board = new Board();
+            //Board board = new Board();
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
 
-            while (sw.Elapsed.Seconds < 4)
-            {
-                Random rng = new Random();
+            //while (sw.Elapsed.Seconds < 4)
+            //{
+            //    Random rng = new Random();
 
-                for (int y = 0; y < board.Rows / 2; y++)
-                {
-                    for (int x = 0; x < board.Columns / 2; x++)
-                    {
-                        int k = rng.Next(1, 5);
+            //    for (int y = 0; y < board.Rows / 2; y++)
+            //    {
+            //        for (int x = 0; x < board.Columns / 2; x++)
+            //        {
+            //            int k = rng.Next(1, 5);
 
-                        for (int Y = 0; Y < 1; Y++)
-                        {
-                            for (int X = 0; X < 1; X++)
-                            {
-                                board[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(k);
-                            }
-                        }
-                    }
-                }
+            //            for (int Y = 0; Y < 1; Y++)
+            //            {
+            //                for (int X = 0; X < 1; X++)
+            //                {
+            //                    board[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(k);
+            //                }
+            //            }
+            //        }
+            //    }
 
-                board.Render();
-            }
+            //    board.Render();
+            //}
         }
 
-        [STAThread]
-        static void Main(string[] args)
+        static void game()
         {
-            //object co = Collision.PlayerEnemy;
-
-            //Collision k;
-
-            //k = (Collision)co;
-
-            //Console.WriteLine();
-
-            //Console.ReadLine();
-
             intro(true);
+
+            Style styleP = new Style("  *  " +
+                                     "     " +
+                                     "*   *" +
+                                     "     " +
+                                     "  *  ", 5, 5);
+
+            Style styleE = new Style("  **  " +
+                                     " **** " +
+                                     "**  **" +
+                                     " **** " +
+                                     "  **  ", 6, 5);
+
+            Style styleG = new Style("  **  " +
+                                     " **** " +
+                                     "******" +
+                                     "******" +
+                                     " **** " +
+                                     "  **  ", 6, 6);
+
+            Style styleB = new Style("*", 1, 1);
+
+            Random rng = new Random();
 
             Board board = new Board();
 
             board.Render(true);
 
-            Style styleP = new Style("*****" +
-                                     "*   *" +
-                                     "* * *" +
-                                     "*   *" +
-                                     "*****", 5, 5);
-
-            Style styleE = new Style("*****" +
-                                     "*   *" +
-                                     "* * *" +
-                                     "*   *" +
-                                     "*****", 5, 5);
-
-            Style styleG = new Style("****" +
-                                     "****" +
-                                     "****" +
-                                     "****", 4, 4);
-
-            Random rng = new Random();
-
             Quadrant quadrant = (Quadrant)rng.Next(0, 4);
 
-            Goal goal = new Goal(4, quadrant, board, styleG);
-            Player player = new Player(50, 4, goal, board, styleP);
+            Goal goal = new Goal(10, quadrant, board, styleG);
+            Player player = new Player(50, 10, goal.Quadrant, board, styleP);
             Enemy enemy = new Enemy(50, 50, 500, board, styleE, player);
-            Block block = new Block(40, 40, board, styleG);
+
+            board.AddBlocks(styleB, 500);
 
             board.Objects.Add(goal);
             board.Objects.Add(player);
             board.Objects.Add(enemy);
-            board.Objects.Add(block);
 
             DateTime now = new DateTime();
             DateTime previous = new DateTime();
@@ -135,27 +121,24 @@ namespace ConsoleGame
 
                 board.UpdateObjects();
 
-                //object collision = cache.Get("collision");
+                object collision = cache.Get("collision");
 
-                //if (collision != null)
-                //    break;
+                if (collision != null)
+                    break;
 
                 wait = 16 - elapsed.Milliseconds;
 
                 if (!(wait < 0))
-                    Task.Delay(wait); 
+                    Task.Delay(wait);
 
                 board.Render();
             }
+        }
 
-
-            Console.ResetColor();
-
-            Console.Clear();
-
-            Console.WriteLine("NOOOOOOOOOOOOOOOOOOOOOO");
-
-            Console.ReadLine();
+        [STAThread] 
+        static void Main(string[] args)
+        {
+            game();
         }
     }
 }

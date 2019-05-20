@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ConsoleGame.Objects.GameBoard;
+﻿using ConsoleGame.Objects.GameBoard;
 using System.Windows.Input;
 using System.Diagnostics;
 using ConsoleGame.Extensions;
@@ -12,14 +7,14 @@ namespace ConsoleGame.Objects.BoardObjects
 {
     class Player : BoardObject
     {
-        public Player(int speed, int quadrantRatio, Goal goal, Board board, Style style) : base(board, style)
+        public Player(int speed, int quadrantRatio, Quadrant opposingQuadrant, Board board, Style style) : base(board, style)
         {
             SW = new Stopwatch();
             SW.Start();
             Speed = speed;
             OccupationType = OccupationType.Player;
 
-            switch (goal.Quadrant)
+            switch (opposingQuadrant)
             {
                 case Quadrant.UpperLeft:
                     Quadrant = Quadrant.LowerRight;

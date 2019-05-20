@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ConsoleGame.Objects
 {
     public class Style
@@ -17,6 +12,11 @@ namespace ConsoleGame.Objects
             Sprite = texture;
             Width = width;
             Height = height;
+        }
+
+        public char this[int x, int y]
+        {
+            get { return Sprite[y * Width + x]; }
         }
     }
 }
