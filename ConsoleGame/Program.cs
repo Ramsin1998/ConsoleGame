@@ -5,6 +5,7 @@ using ConsoleGame.Objects;
 using ConsoleGame.Objects.BoardObjects;
 using System.Runtime.Caching;
 using ConsoleGame.Extensions;
+using System.Threading;
 
 namespace ConsoleGame
 {
@@ -129,16 +130,38 @@ namespace ConsoleGame
                 wait = 16 - elapsed.Milliseconds;
 
                 if (!(wait < 0))
-                    Task.Delay(wait);
+                    Task.Delay(wait).Wait();
 
                 board.Render();
             }
         }
 
-        [STAThread] 
+        static void kk()
+        {
+            char[] text = "hello world!".ToCharArray();
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+                Task.Delay(1000).Wait();
+            }
+        }
+
         static void Main(string[] args)
         {
-            game();
+            //game();
+
+            ThreadStart start = new ThreadStart(kk);
+
+            Thread thread = new Thread(start);
+
+            thread.Start();
+
+            Console.WriteLine();
+
+            kk();
+
+            Console.ReadLine();
         }
     }
 }

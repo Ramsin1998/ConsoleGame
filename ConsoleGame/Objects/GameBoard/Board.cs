@@ -114,22 +114,24 @@ namespace ConsoleGame.Objects.GameBoard
         {
             string border = new string(' ', Columns * 2);
 
+            ConsoleColor borderColor = ConsoleColor.Yellow;
+
             Console.SetCursorPosition((Left - 1) * 2, Top - 1);
-            ConsoleOutput.ColorWrite(border, ConsoleColor.Cyan);
+            ConsoleOutput.ColorWrite(border, borderColor);
 
             Console.SetCursorPosition((Left - 1) * 2 , Top - 1 + Rows);
-            ConsoleOutput.ColorWrite(border, ConsoleColor.Cyan);
+            ConsoleOutput.ColorWrite(border, borderColor);
 
             for (int i = 0; i <= Rows; i++)
             {
                 Console.SetCursorPosition((Left - 1) * 2, Top - 1 + i);
-                ConsoleOutput.ColorWrite("  ", ConsoleColor.Cyan);
+                ConsoleOutput.ColorWrite("  ", borderColor);
             }
 
             for (int i = 0; i <= Rows; i++)
             {
                 Console.SetCursorPosition((Left - 1 + Columns) * 2, Top - 1 + i);
-                ConsoleOutput.ColorWrite("  ", ConsoleColor.Cyan);
+                ConsoleOutput.ColorWrite("  ", borderColor);
             }
         }
 
@@ -224,6 +226,21 @@ namespace ConsoleGame.Objects.GameBoard
                         continue;
 
                     else if (this[x + coordinates.Column, y + coordinates.Row].OccupationType == OccupationType.Block)
+                        return false;
+                }
+
+            return true;
+        }
+
+        public bool Project(BoardObject obj, Coordinates coordinates, OccupationType collider)
+        {
+            for (int y = 0; y < obj.Style.Height; y++)
+                for (int x = 0; x < obj.Style.Width; x++)
+                {
+                    if (obj.Style[x, y] == ' ')
+                        continue;
+
+                    else if (this[x + coordinates.Column, y + coordinates.Row].OccupationType == collider)
                         return false;
                 }
 
