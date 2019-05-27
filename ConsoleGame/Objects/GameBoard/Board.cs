@@ -21,6 +21,11 @@ namespace ConsoleGame.Objects.GameBoard
         public int Columns { get; set; }
         public int Left { get; set; }
         public int Top { get; set; }
+
+        public Panel this[int column, int row]
+        {
+            get { return Panels[row * Columns + column]; }
+        }
         
         public Board()
         {
@@ -61,11 +66,6 @@ namespace ConsoleGame.Objects.GameBoard
 
                 Formats.Add(occupationType, occupationType.GetAttributeOfType<ConsoleOutputFormat>());
             }
-        }
-
-        public Panel this[int column, int row]
-        {
-            get { return Panels[row * Columns + column]; }
         }
 
         public void Render(bool firstTime = false)
@@ -133,6 +133,11 @@ namespace ConsoleGame.Objects.GameBoard
                 Console.SetCursorPosition((Left - 1 + Columns) * 2, Top - 1 + i);
                 ConsoleOutput.ColorWrite("  ", borderColor);
             }
+        }
+
+        public void AddObject(BoardObject obj)
+        {
+            Ghost tmpObj = new Ghost()
         }
 
         public void UpdateObjects()

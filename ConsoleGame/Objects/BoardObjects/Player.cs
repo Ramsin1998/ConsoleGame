@@ -1,7 +1,8 @@
 ﻿using ConsoleGame.Objects.GameBoard;
 using System.Windows.Input;
 using System.Diagnostics;
-using ConsoleGame.Extensions;
+using System.Threading;
+using System;
 
 namespace ConsoleGame.Objects.BoardObjects
 {
@@ -47,11 +48,6 @@ namespace ConsoleGame.Objects.BoardObjects
 
         public override void Move()
         {
-            if (!(SW.ElapsedMilliseconds > Speed))
-                return;
-
-            SW.Restart();
-
             int column = coordinates.Column;
             int row = coordinates.Row;
 

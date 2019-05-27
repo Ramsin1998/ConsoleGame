@@ -136,32 +136,10 @@ namespace ConsoleGame
             }
         }
 
-        static void kk()
-        {
-            char[] text = "hello world!".ToCharArray();
-
-            for (int i = 0; i < text.Length; i++)
-            {
-                Console.Write(text[i]);
-                Task.Delay(1000).Wait();
-            }
-        }
-
         static void Main(string[] args)
         {
-            //game();
+            game();
 
-            ThreadStart start = new ThreadStart(kk);
-
-            Thread thread = new Thread(start);
-
-            thread.Start();
-
-            Console.WriteLine();
-
-            kk();
-
-            Console.ReadLine();
         }
     }
 }
