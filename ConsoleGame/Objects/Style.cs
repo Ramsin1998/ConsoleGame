@@ -22,21 +22,23 @@ namespace ConsoleGame.Objects
 
         public void AddSpaceOnAllSides(int space)
         {
-            string spaceOnTopAndBelow = new string(' ', Width);
-            for (int i = 0; i < space; i++)
-            {
-                Sprite.Insert(0, spaceOnTopAndBelow);
-                Sprite += spaceOnTopAndBelow;
-            }
+            string[] spriteLines = (string[])Sprite.Split(Width);
 
             string spaceOnSides = new string(' ', space);
-            string[] spriteLines = (string[])Sprite.Split(Width);
 
             for (int i = 0; i < spriteLines.Length; i++)
             {
                 spriteLines[i].Insert(0, spaceOnSides);
                 spriteLines[i] += spaceOnSides;
             }
+
+            string spaceOnTopAndBelow = new string(' ', Width);
+
+            //for (int i = 0; i < space; i++)
+            //{
+            //    Sprite.Insert(0, spaceOnTopAndBelow);
+            //    Sprite += spaceOnTopAndBelow;
+            //}
 
             Sprite = string.Join("", spriteLines);
 

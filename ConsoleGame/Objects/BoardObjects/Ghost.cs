@@ -12,7 +12,7 @@ namespace ConsoleGame.Objects.BoardObjects
 {
     public class Ghost : BoardObject
     {
-        public Ghost(Board board, BoardObject obj, int space) : base(board, obj.Style.AddSpaceOnAllSides(space)) 
+        public Ghost(Board board, BoardObject obj, int space)
         {
 
         }

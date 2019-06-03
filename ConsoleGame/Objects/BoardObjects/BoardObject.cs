@@ -28,6 +28,8 @@ namespace ConsoleGame.Objects.BoardObjects
             }
         }
 
+        protected BoardObject() { }
+
         protected BoardObject(Board board, Style style)
         {
             Board = board;
