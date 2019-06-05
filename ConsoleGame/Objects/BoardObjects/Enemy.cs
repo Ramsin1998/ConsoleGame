@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace ConsoleGame.Objects.BoardObjects
 {
-    class Enemy : BoardObject
+    public class Enemy : BoardObject
     {
         public Player Player { get; set; }
         public int DeltaX { get; set; }

@@ -12,9 +12,11 @@ namespace ConsoleGame.Objects.BoardObjects
 {
     public class Ghost : BoardObject
     {
-        public Ghost(Board board, BoardObject obj, int space) : base(board, obj.Style.AddSpaceOnAllSides(space)) 
+        public Ghost(BoardObject obj, int space) 
         {
-
+            Style = new Style(obj.Style.Sprite.Replace(' ', '*'), obj.Style.Width, obj.Style.Height);
+            Style.AddSpaceOnAllSides(space);
+            Coordinates = new Coordinates(obj.Coordinates.Column - space, obj.Coordinates.Row - space);
         }
     }
 }
