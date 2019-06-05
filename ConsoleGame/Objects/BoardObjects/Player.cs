@@ -6,7 +6,7 @@ using System;
 
 namespace ConsoleGame.Objects.BoardObjects
 {
-    class Player : BoardObject
+    public class Player : BoardObject
     {
         public Player(int speed, int quadrantRatio, Quadrant opposingQuadrant, Board board, Style style) : base(board, style)
         {
@@ -35,6 +35,7 @@ namespace ConsoleGame.Objects.BoardObjects
             }
 
             RandomizeQuadrantPosition(quadrantRatio);
+            Ghost = new Ghost(this, 5);
         }
 
         public Player(int column, int row, int speed, Board board, Style style) : base(column, row, board, style)
@@ -44,6 +45,7 @@ namespace ConsoleGame.Objects.BoardObjects
             SW.Start();
             Speed = speed;
             OccupationType = OccupationType.Player;
+            Ghost = new Ghost(this, 5);
         }
 
         public override void Move()

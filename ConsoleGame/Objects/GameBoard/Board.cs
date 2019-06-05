@@ -135,8 +135,13 @@ namespace ConsoleGame.Objects.GameBoard
             }
         }
 
-        public void AddObject(BoardObject obj)
+        public void AddObject(BoardObject obj, bool clearSurroundings = false)
         {
+            if (clearSurroundings)
+            {
+
+            }
+
             Ghost tmpObj = new Ghost()
         }
 
@@ -160,12 +165,15 @@ namespace ConsoleGame.Objects.GameBoard
             {
                 for (int x = 0; x < obj.Style.Width; x++)
                 {
-                    if (obj.Style[x, y] != '*')
+                    int actualX = x + obj.Coordinates.Column;
+                    int actualY = y + obj.Coordinates.Row;
+
+                    if (obj.Style[x, y] != '*' || actualX < 0 || actualY < 0 || actualX > Columns - 1 || actualY > Rows - 1)
                         continue;
 
                     else
                     {
-                        Panel currentPanel = this[x + obj.Coordinates.Column, y + obj.Coordinates.Row];
+                        Panel currentPanel = this[actualX, actualY];
 
                         if (clear)
                             this[x + obj.PreviousCoordinates.Column, y + obj.PreviousCoordinates.Row].OccupationType = OccupationType.Neutral;

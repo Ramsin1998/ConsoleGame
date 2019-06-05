@@ -2,7 +2,7 @@
 
 namespace ConsoleGame.Objects.BoardObjects
 {
-    class Block : BoardObject
+    public class Block : BoardObject
     {
         public Block(int column, int row, Board board, Style style) : base(column, row, board, style)
         {

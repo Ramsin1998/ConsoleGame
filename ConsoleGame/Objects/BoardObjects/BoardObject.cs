@@ -15,6 +15,7 @@ namespace ConsoleGame.Objects.BoardObjects
         public Board Board { get; set; }
         public Stopwatch SW { get; set; }
         public int Speed { get; set; }
+        public Ghost Ghost { get; set; }
 
         public Coordinates Coordinates
         {
@@ -27,6 +28,8 @@ namespace ConsoleGame.Objects.BoardObjects
                 coordinates = value;
             }
         }
+
+        protected BoardObject() { }
 
         protected BoardObject(Board board, Style style)
         {
