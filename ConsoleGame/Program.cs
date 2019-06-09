@@ -37,10 +37,10 @@ namespace ConsoleGame
             Console.CursorVisible = false;
             Task.Delay(100).Wait();
 
-            SoundPlayer sp = new SoundPlayer(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Pulsar.wav");
-            sp.PlayLooping();
+            //SoundPlayer sp = new SoundPlayer(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Pulsar.wav");
+            //sp.PlayLooping();
 
-            Game board = new Game();
+            //Game game = new Game();
 
             //Stopwatch sw = new Stopwatch();
             //sw.Start();
@@ -49,9 +49,9 @@ namespace ConsoleGame
             //{
             //    Random rng = new Random();
 
-            //    for (int y = 0; y < board.Rows / 2; y++)
+            //    for (int y = 0; y < game.Rows / 2; y++)
             //    {
-            //        for (int x = 0; x < board.Columns / 2; x++)
+            //        for (int x = 0; x < game.Columns / 2; x++)
             //        {
             //            int random = rng.Next(1, Enum.GetNames(typeof(OccupationType)).Length);
 
@@ -59,13 +59,13 @@ namespace ConsoleGame
             //            {
             //                for (int X = 0; X < 1; X++)
             //                {
-            //                    board[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(random);
+            //                    game[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(random);
             //                }
             //            }
             //        }
             //    }
 
-            //    board.Render();
+            //    game.Render();
             //}
         }
 
@@ -98,20 +98,20 @@ namespace ConsoleGame
 
             Random rng = new Random();
 
-            Game board = new Game();
+            Game game = new Game();
 
             Task.Delay(100).Wait();
 
-            board.Render(true);
+            game.Render(true);
 
             Quadrant quadrant = (Quadrant)rng.Next(0, 4);
 
-            Goal goal = new Goal(30, 50, board, styleG);
-            Block block = new Block(-4, -4, board, new Style(new string('*', 15 * 15), 15, 15));
-            Player player = new Player(1, 1, 50, board, styleP);
-            Enemy enemy = new Enemy(50, 50, 500, board, styleE, player);
+            Goal goal = new Goal(30, 50, game, styleG);
+            Block block = new Block(4000, 4000, game, new Style(new string('*', 15 * 15), 15, 15));
+            Player player = new Player(1, 1, 50, game, styleP);
+            Enemy enemy = new Enemy(50, 50, 500, game, styleE, player);
 
-            board.AddBlocks(3);
+            game.AddBlocks(3);
 
             ////////////////////////////////////////////////////////////////////
 
@@ -130,14 +130,14 @@ namespace ConsoleGame
                 elapsed = now - previous;
 
                 ///////////////LoopCode///////////////
-                board.ProcessInputs();
-                board.Update();
+                game.ProcessInputs();
+                game.Update();
 
                 object collision = cache.Get("collision");
                 if (collision != null)
                     break;
 
-                board.Render();
+                game.Render();
 
                 ////////////////////////////////////////
 

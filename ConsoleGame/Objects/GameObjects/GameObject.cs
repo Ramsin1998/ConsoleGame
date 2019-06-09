@@ -7,8 +7,8 @@ namespace ConsoleGame.Objects.GameObjects
 {
     public abstract class GameObject
     {
-        //public int ID_Code => 
-        public List<Coordinates> Tracks = new List<Coordinates>(2) { null, null};
+        public int ID_Code => GetHashCode();
+        public List<Coordinates> Tracks = new List<Coordinates>() { null, null};
 
         public OccupationType OccupationType { get; set; }
         public Quadrant Quadrant { get; set; }
@@ -24,26 +24,41 @@ namespace ConsoleGame.Objects.GameObjects
 
             set
             {
-                if (Tracks[Tracks.Count - 1] != value)
+                if (Tracks[Tracks.Count - 1] == null)
+                {
+                    int column = value.Column;
+                    int row = value.Row;
+
+                    int columnLimit = Game.Columns - Style.Width;
+                    if (column < 0)
+                        column = 0;
+
+                    else if (column > columnLimit)
+                        column = columnLimit;
+
+                    int rowLimit = Game.Rows - Style.Height;
+                    if (row < 0)
+                        row = 0;
+
+                    else if (row > rowLimit)
+                        row = rowLimit;
+
+                    Tracks.Add(new Coordinates(column, row));
+                }
+
+                else if (Tracks[Tracks.Count - 1] != value)
                 {
                     Tracks.Add(value);
 
                     if (Game != null)
-                    Game.AlteredObjects.Add(this);
+                        Game.AlteredObjects.Add(this);
                 }
             }
         }
 
         public Coordinates PreviousCoordinates
         {
-            get
-            {
-                if (Tracks.Count > 1)
-                    return Tracks[Tracks.Count - 2];
-
-                else
-                    return null;
-            }
+            get { return Tracks[Tracks.Count - 2]; }
         }
 
         protected GameObject()
@@ -62,23 +77,10 @@ namespace ConsoleGame.Objects.GameObjects
 
         protected GameObject(int column, int row, Game game, Style style, bool movable)
         {
-            if (column < 0)
-                column = 0;
-
-            else if (column > game.Columns - style.Width - 1)
-                column = game.Columns - style.Width - 1;
-
-            if (row < 0)
-                row = 0;
-
-            else if (row > game.Rows - style.Height - 1)
-                row = game.Rows - style.Height - 1;
-
-            Coordinates = new Coordinates(column, row);
-
             Game = game;
             Style = style;
             Movable = movable;
+            Coordinates = new Coordinates(column, row);
 
             initialize();
         }
@@ -88,12 +90,9 @@ namespace ConsoleGame.Objects.GameObjects
             Game.AddObject(this);
         }
 
-        public virtual void Move()
-        {
-            //Goard.AlteredObjects.Add(this);
-        }
+        public virtual void Move() { }
 
-        virtual public void ResetLastMove()
+        virtual public void RevertLastMove()
         {
             Tracks.RemoveAt(Tracks.Count - 1);
         }

@@ -16,9 +16,9 @@ namespace ConsoleGame.Objects.GameEngine
 
         public List<Panel> Panels { get; set; }
         public List<Panel> AlteredPanels { get; set; }
-        public List<GameObjects.GameObject> StaticObjects { get; set; }
-        public List<GameObjects.GameObject> MovableObjects { get; set; }
-        public List<GameObjects.GameObject> AlteredObjects { get; set; }
+        public List<GameObject> StaticObjects { get; set; }
+        public List<GameObject> MovableObjects { get; set; }
+        public List<GameObject> AlteredObjects { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
         public int Left { get; set; }
@@ -48,9 +48,9 @@ namespace ConsoleGame.Objects.GameEngine
         {
             Panels = new List<Panel>();
             AlteredPanels = new List<Panel>();
-            StaticObjects = new List<GameObjects.GameObject>();
-            MovableObjects = new List<GameObjects.GameObject>();
-            AlteredObjects = new List<GameObjects.GameObject>();
+            StaticObjects = new List<GameObject>();
+            MovableObjects = new List<GameObject>();
+            AlteredObjects = new List<GameObject>();
 
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
@@ -82,7 +82,7 @@ namespace ConsoleGame.Objects.GameEngine
             }
         }
 
-        public void AddObject(GameObjects.GameObject obj, int space = 0)
+        public void AddObject(GameObject obj, int space = 0)
         {
             if (space != 0)
                 ClearArea(obj, space);
@@ -96,7 +96,7 @@ namespace ConsoleGame.Objects.GameEngine
             AlteredObjects.Add(obj);
         }
 
-        public void ClearArea(GameObjects.GameObject obj, int space)
+        public void ClearArea(GameObject obj, int space)
         {
             int xLoopLimit = space * 2 + obj.Style.Width;
             int yLoopLimit = space * 2 + obj.Style.Height;
@@ -181,7 +181,7 @@ namespace ConsoleGame.Objects.GameEngine
 
                 currenObj.Move();
                 if (!Project(currenObj))
-                    currenObj.ResetLastMove();
+                    currenObj.RevertLastMove();
             }
         }
 
@@ -189,7 +189,7 @@ namespace ConsoleGame.Objects.GameEngine
         {
             for (int i = 0; i < AlteredObjects.Count; i++)
             {
-                GameObjects.GameObject obj = AlteredObjects[i];
+                GameObject obj = AlteredObjects[i];
 
                 if (obj.Movable)
                     UpdateObject(obj, true);
@@ -200,7 +200,7 @@ namespace ConsoleGame.Objects.GameEngine
             AlteredObjects.Clear();
         }
 
-        public void UpdateObject(GameObjects.GameObject obj, bool clear = false)
+        public void UpdateObject(GameObject obj, bool clear = false)
         {
             for (int y = 0; y < obj.Style.Height; y++)
             {
@@ -214,12 +214,15 @@ namespace ConsoleGame.Objects.GameEngine
                         int actualX = 0;
                         int actualY = 0;
 
-                        if (clear && obj.PreviousCoordinates != null)
+                        if (clear)
                         {
-                            actualX = x + obj.PreviousCoordinates.Column;
-                            actualY = y + obj.PreviousCoordinates.Row;
+                            if (obj.PreviousCoordinates != null)
+                            {
+                                actualX = x + obj.PreviousCoordinates.Column;
+                                actualY = y + obj.PreviousCoordinates.Row;
 
-                            this[actualX, actualY].OccupationType = OccupationType.Neutral;
+                                this[actualX, actualY].OccupationType = OccupationType.Neutral;
+                            }
                         }
 
                         else
@@ -279,7 +282,7 @@ namespace ConsoleGame.Objects.GameEngine
             return Collision.Nothing;
         }
 
-        public bool Project(GameObjects.GameObject obj, params OccupationType[] colliders)
+        public bool Project(GameObject obj, params OccupationType[] colliders)
         {
             for (int y = 0; y < obj.Style.Height; y++)
                 for (int x = 0; x < obj.Style.Width; x++)
@@ -315,8 +318,6 @@ namespace ConsoleGame.Objects.GameEngine
 
                 Block block = new Block(column, row, this, style);
             }
-
-            Update();
         }
 
         public void AddBlocks(int amount)
@@ -328,11 +329,9 @@ namespace ConsoleGame.Objects.GameEngine
             Style style = new Style(sprite, width, height);
 
             Block block = new Block(Columns / 3, Rows / 3, this, style);
-
-            Update();
         }
 
-        public void KillObject(GameObjects.GameObject obj)
+        public void KillObject(GameObject obj)
         {
 
         }

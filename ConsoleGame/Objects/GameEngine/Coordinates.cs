@@ -8,13 +8,58 @@ namespace ConsoleGame.Objects.GameEngine
 {
     public class Coordinates
     {
-        public int Row { get; }
-        public int Column { get; }
+        private int row;
+        private int column;
+        private int maxColumn = Int32.MaxValue;
+        private int maxRow = Int32.MaxValue;
+
+
+        public int Row
+        {
+            get { return row; }
+
+            set
+            {
+                if (value < 0)
+                    row = 0;
+
+                else if (value > maxRow)
+                    row = maxRow;
+
+                else
+                    row = value;
+            }
+        }
+
+        public int Column
+        {
+            get { return column; }
+
+            set
+            {
+                if (value < 0)
+                    column = 0;
+
+                else if (value > maxColumn)
+                    column = maxColumn;
+
+                else
+                    column = value;
+            }
+        }
 
         public Coordinates(int column, int row)
         {
             Row = row;
             Column = column;
+        }
+
+        public Coordinates(int column, int row, int maxColumn, int maxRow)
+        {
+            Row = row;
+            Column = column;
+            this.maxColumn = maxColumn;
+            this.maxRow = maxRow;
         }
 
         public override bool Equals(object obj)
