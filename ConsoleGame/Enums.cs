@@ -9,20 +9,23 @@ namespace ConsoleGame
 {
     public enum OccupationType
     {
-        [ConsoleOutputFormat("  ", ConsoleColor.Black)]
+        [ConsoleOutputFormat(' ', ConsoleColor.Black)]
         Neutral,
 
-        [ConsoleOutputFormat("  ", ConsoleColor.White)]
+        [ConsoleOutputFormat(' ', ConsoleColor.White)]
         Player,
 
-        [ConsoleOutputFormat("  ", ConsoleColor.Green)]
+        [ConsoleOutputFormat(' ', ConsoleColor.Green)]
         Goal,
 
-        [ConsoleOutputFormat("  ", ConsoleColor.DarkGray)]
+        [ConsoleOutputFormat(' ', ConsoleColor.DarkYellow)]
         Block,
 
-        [ConsoleOutputFormat("  ", ConsoleColor.Red)]
-        Enemy
+        [ConsoleOutputFormat(' ', ConsoleColor.DarkRed)]
+        Enemy,
+
+        [ConsoleOutputFormat(' ', ConsoleColor.Magenta)]
+        Bullet
     }
 
     public enum Quadrant
@@ -45,5 +48,15 @@ namespace ConsoleGame
         PlayerXGoal,
 
         BlockXPlayer
+    }
+
+    [Flags]
+    public enum Direction
+    {
+        None = 0,
+        Up = 1,
+        Right = 2,
+        Down = 4,
+        Left = 8,
     }
 }

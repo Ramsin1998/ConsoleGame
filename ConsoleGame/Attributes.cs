@@ -4,13 +4,13 @@ namespace ConsoleGame
 {
     public class ConsoleOutputFormat : Attribute
     {
-        public string Text { get; set; }
+        public char Texture { get; set; }
         public ConsoleColor BackgroundColor { get; set; }
         public ConsoleColor ForegroundColor { get; set; }
 
-        public ConsoleOutputFormat(string text, ConsoleColor backgroundColor, ConsoleColor foregroundColor = ConsoleColor.White)
+        public ConsoleOutputFormat(char text, ConsoleColor backgroundColor, ConsoleColor foregroundColor = ConsoleColor.White)
         {
-            Text = text;
+            Texture = text;
             BackgroundColor = backgroundColor;
             ForegroundColor = foregroundColor;
         }

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleGame.Objects.GameBoard
+namespace ConsoleGame.Objects.GameEngine
 {
-    public struct Coordinates
+    public class Coordinates
     {
-        public int Row { get; set; }
-        public int Column { get ; set; }
+        public int Row { get; }
+        public int Column { get; }
 
         public Coordinates(int column, int row)
         {
@@ -29,16 +29,6 @@ namespace ConsoleGame.Objects.GameBoard
             }
         }
 
-        public static bool operator ==(Coordinates coordinates1, Coordinates coordinates2)
-        {
-            return coordinates1.Equals(coordinates2);
-        }
-
-        public static bool operator !=(Coordinates coordinates1, Coordinates coordinates2)
-        {
-            return !coordinates1.Equals(coordinates2);
-        }
-
-        public override int GetHashCode() => new { Row, Column }.GetHashCode();
+        public override int GetHashCode() => (Row, Column).GetHashCode();
     }
 }

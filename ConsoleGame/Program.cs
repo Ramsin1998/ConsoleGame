@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ConsoleGame.Objects.GameBoard;
+using ConsoleGame.Objects.GameEngine;
 using ConsoleGame.Objects;
-using ConsoleGame.Objects.BoardObjects;
+using ConsoleGame.Objects.GameObjects;
 using System.Runtime.Caching;
 using ConsoleGame.Extensions;
 using System.Threading;
+using System.Diagnostics;
+using System.Media;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace ConsoleGame
 {
     class Program
     {
-        static void intro(bool fullscreen = false)
+        static void intro(bool fullscreen = true)
         {
             if (fullscreen)
             {
@@ -31,13 +35,17 @@ namespace ConsoleGame
             Console.Clear();
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
             Console.CursorVisible = false;
+            Task.Delay(100).Wait();
 
-            //Board board = new Board();
+            SoundPlayer sp = new SoundPlayer(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Pulsar.wav");
+            sp.PlayLooping();
+
+            Game board = new Game();
 
             //Stopwatch sw = new Stopwatch();
             //sw.Start();
 
-            //while (sw.Elapsed.Seconds < 4)
+            //while (sw.Elapsed.Seconds < 5)
             //{
             //    Random rng = new Random();
 
@@ -45,13 +53,13 @@ namespace ConsoleGame
             //    {
             //        for (int x = 0; x < board.Columns / 2; x++)
             //        {
-            //            int k = rng.Next(1, 5);
+            //            int random = rng.Next(1, Enum.GetNames(typeof(OccupationType)).Length);
 
             //            for (int Y = 0; Y < 1; Y++)
             //            {
             //                for (int X = 0; X < 1; X++)
             //                {
-            //                    board[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(k);
+            //                    board[x * 2 + X, y * 2 + Y].OccupationType = (OccupationType)(random);
             //                }
             //            }
             //        }
@@ -61,9 +69,11 @@ namespace ConsoleGame
             //}
         }
 
-        static void game()
+        static void engine()
         {
-            intro(true);
+            intro();
+
+            ////////////////////prerequisites////////////////////////////
 
             Style styleP = new Style("  *  " +
                                      "     " +
@@ -88,28 +98,30 @@ namespace ConsoleGame
 
             Random rng = new Random();
 
-            Board board = new Board();
+            Game board = new Game();
+
+            Task.Delay(100).Wait();
 
             board.Render(true);
 
             Quadrant quadrant = (Quadrant)rng.Next(0, 4);
 
-            Goal goal = new Goal(10, quadrant, board, styleG);
-            Player player = new Player(50, 10, goal.Quadrant, board, styleP);
+            Goal goal = new Goal(30, 50, board, styleG);
+            Block block = new Block(-4, -4, board, new Style(new string('*', 15 * 15), 15, 15));
+            Player player = new Player(1, 1, 50, board, styleP);
             Enemy enemy = new Enemy(50, 50, 500, board, styleE, player);
 
-            board.AddBlocks(styleB, 500);
+            board.AddBlocks(3);
 
-            board.Objects.Add(goal);
-            board.Objects.Add(player);
-            board.Objects.Add(enemy);
+            ////////////////////////////////////////////////////////////////////
 
+            /////////////////////////GoardLoop/Engine///////////////////////////////////
+
+            MemoryCache cache = MemoryCache.Default;
             DateTime now = new DateTime();
             DateTime previous = new DateTime();
             TimeSpan elapsed = new TimeSpan();
             int wait = 0;
-
-            MemoryCache cache = MemoryCache.Default;
 
             while (true)
             {
@@ -117,29 +129,49 @@ namespace ConsoleGame
                 now = DateTime.Now;
                 elapsed = now - previous;
 
-                player.Move();
-                enemy.Move();
-
-                board.UpdateObjects();
+                ///////////////LoopCode///////////////
+                board.ProcessInputs();
+                board.Update();
 
                 object collision = cache.Get("collision");
-
                 if (collision != null)
                     break;
+
+                board.Render();
+
+                ////////////////////////////////////////
 
                 wait = 16 - elapsed.Milliseconds;
 
                 if (!(wait < 0))
                     Task.Delay(wait).Wait();
-
-                board.Render();
             }
+
+            //////////////////////////////////////////////////////////////////
         }
 
-        static void Main(string[] args)
+        [STAThread]
+        static void Main(string[] args) 
         {
-            game();
+            engine();
 
+            //GoardObject obj = new Goal(5, 6, new Goard(), new Style("*", 1, 1));
+            //GoardObject obj10 = new Goal(5, 6, new Goard(), new Style("*", 1, 1));
+            //GoardObject obj11 = new Goal(5, 6, new Goard(), new Style("*", 1, 1));
+
+            //Console.WriteLine(obj.GetHashCode());
+            //Console.WriteLine(obj10.GetHashCode());
+            //Console.WriteLine(obj11.GetHashCode());
+
+            //List<GoardObject> k = new List<GoardObject>();
+
+            //k.Add(obj);
+
+            //k[0].OccupationType = OccupationType.Block;
+
+            //Console.WriteLine(k[0].GetHashCode());
+
+            //Console.ReadLine();
         }
     }
 }

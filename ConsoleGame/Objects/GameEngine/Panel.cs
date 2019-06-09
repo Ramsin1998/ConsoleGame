@@ -1,5 +1,5 @@
 ﻿
-namespace ConsoleGame.Objects.GameBoard
+namespace ConsoleGame.Objects.GameEngine
 {
     public class Panel
     {
@@ -14,18 +14,18 @@ namespace ConsoleGame.Objects.GameBoard
                 if (value != occupationType)
                 {
                     occupationType = value;
-                    Board.AlteredPanels.Add(this);
+                    Game.AlteredPanels.Add(this);
                 }
             }
         }
 
         public Coordinates Coordinates { get; set; }
-        public Board Board { get; set; }
+        public Game Game{ get; set; }
 
-        public Panel(int column, int row, Board board)
+        public Panel(int column, int row, Game game)
         {
             Coordinates = new Coordinates(column, row);
-            Board = board;
+            Game = game;
             OccupationType = OccupationType.Neutral;
         }
     }

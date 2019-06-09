@@ -4,54 +4,53 @@ using System.Text;
 using System.Runtime.Caching;
 using ConsoleGame.Extensions;
 using ConsoleGame.Utilities;
-using ConsoleGame.Objects.BoardObjects;
+using ConsoleGame.Objects.GameObjects;
 
-namespace ConsoleGame.Objects.GameBoard
+namespace ConsoleGame.Objects.GameEngine
 {
-    public class Board
+    public class Game
     {
-        public static readonly int MaxRows = Console.WindowHeight - 5;
-        public static readonly int MaxColumns = (Console.WindowWidth - 7) / 2;
+        public static readonly int MaxRows = Console.WindowHeight - 6;
+        public static readonly int MaxColumns = (Console.WindowWidth - 8) / 2;
         public static Dictionary<OccupationType, ConsoleOutputFormat> Formats { get; set; }
 
-        public List<Panel> AlteredPanels { get; set; }
-        public List<BoardObject> Objects { get; set; }
         public List<Panel> Panels { get; set; }
+        public List<Panel> AlteredPanels { get; set; }
+        public List<GameObjects.GameObject> StaticObjects { get; set; }
+        public List<GameObjects.GameObject> MovableObjects { get; set; }
+        public List<GameObjects.GameObject> AlteredObjects { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
         public int Left { get; set; }
         public int Top { get; set; }
 
-        public Panel this[int column, int row]
-        {
-            get { return Panels[row * Columns + column]; }
-        }
-        
-        public Board()
+        public Game()
         {
             Rows = MaxRows;
             Columns = MaxColumns;
             Left = 3;
             Top = 3;
 
-            constructor();
+            initialize();
         }
 
-        public Board(int columns, int rows, int left, int top)
+        public Game(int columns, int rows, int left, int top)
         {
             Rows = rows;
             Columns = columns;
             Left = left;
             Top = top;
 
-            constructor();
+            initialize();
         }
 
-        private void constructor()
+        private void initialize()
         {
             Panels = new List<Panel>();
             AlteredPanels = new List<Panel>();
-            Objects = new List<BoardObject>();
+            StaticObjects = new List<GameObjects.GameObject>();
+            MovableObjects = new List<GameObjects.GameObject>();
+            AlteredObjects = new List<GameObjects.GameObject>();
 
             for (int y = 0; y < Rows; y++)
                 for (int x = 0; x < Columns; x++)
@@ -68,9 +67,53 @@ namespace ConsoleGame.Objects.GameBoard
             }
         }
 
+        public Panel this[int column, int row]
+        {
+            get
+            {
+                if (column < 0 ||
+                    row < 0 ||
+                    column > Columns - 1 ||
+                    row > Rows - 1)
+                    return null;
+
+                else
+                    return Panels[row * Columns + column];
+            }
+        }
+
+        public void AddObject(GameObjects.GameObject obj, int space = 0)
+        {
+            if (space != 0)
+                ClearArea(obj, space);
+
+            if (obj.Movable)
+                MovableObjects.Add(obj);
+
+            else
+                StaticObjects.Add(obj);
+
+            AlteredObjects.Add(obj);
+        }
+
+        public void ClearArea(GameObjects.GameObject obj, int space)
+        {
+            int xLoopLimit = space * 2 + obj.Style.Width;
+            int yLoopLimit = space * 2 + obj.Style.Height;
+
+            for (int y = obj.Coordinates.Row - space; y < yLoopLimit; y++)
+                for (int x = obj.Coordinates.Column - space; x < xLoopLimit; x++)
+                {
+                    Panel currentPanel = this[x, y];
+
+                    if (this[x, y] != null)
+                        currentPanel.OccupationType = OccupationType.Neutral;
+                }
+
+        }
+
         public void Render(bool firstTime = false)
         {
-            StringBuilder stringBuilder = new StringBuilder(Columns * 2);
             Panel currentPanel;
             int count = 1;
 
@@ -85,24 +128,19 @@ namespace ConsoleGame.Objects.GameBoard
             {
                 currentPanel = AlteredPanels[i];
 
-                if (i != AlteredPanels.Count - 1 
-                    && AlteredPanels[i + 1].Coordinates.Column == currentPanel.Coordinates.Column + 1 
+                if (i != AlteredPanels.Count - 1
+                    && AlteredPanels[i + 1].Coordinates.Column == currentPanel.Coordinates.Column + 1
                     && AlteredPanels[i + 1].Coordinates.Row == currentPanel.Coordinates.Row
                     && AlteredPanels[i + 1].OccupationType == currentPanel.OccupationType)
-                        count++;
+                    count++;
 
                 else
                 {
-                    var format = Formats[currentPanel.OccupationType];
-
                     Console.SetCursorPosition((Left + currentPanel.Coordinates.Column - count + 1) * 2, Top + currentPanel.Coordinates.Row);
 
-                    for (; count > 0; count--)
-                        stringBuilder.Append(format.Text);
+                    var format = Formats[currentPanel.OccupationType];
+                    ConsoleOutput.ColorWrite(new string(format.Texture, count * 2), format.BackgroundColor, format.ForegroundColor);
 
-                    ConsoleOutput.ColorWrite(stringBuilder.ToString(), format.BackgroundColor, format.ForegroundColor);
-
-                    stringBuilder.Clear();
                     count = 1;
                 }
             }
@@ -112,74 +150,85 @@ namespace ConsoleGame.Objects.GameBoard
 
         private void drawBorder()
         {
-            string border = new string(' ', Columns * 2);
+            string border = new string(' ', Columns * 2 + 4);
 
-            ConsoleColor borderColor = ConsoleColor.Yellow;
+            ConsoleColor borderColor = ConsoleColor.DarkYellow;
 
             Console.SetCursorPosition((Left - 1) * 2, Top - 1);
             ConsoleOutput.ColorWrite(border, borderColor);
 
-            Console.SetCursorPosition((Left - 1) * 2 , Top - 1 + Rows);
+            Console.SetCursorPosition((Left - 1) * 2, Top + Rows);
             ConsoleOutput.ColorWrite(border, borderColor);
 
-            for (int i = 0; i <= Rows; i++)
+            for (int i = 1; i <= Rows; i++)
             {
                 Console.SetCursorPosition((Left - 1) * 2, Top - 1 + i);
                 ConsoleOutput.ColorWrite("  ", borderColor);
             }
 
-            for (int i = 0; i <= Rows; i++)
+            for (int i = 1; i <= Rows; i++)
             {
-                Console.SetCursorPosition((Left - 1 + Columns) * 2, Top - 1 + i);
+                Console.SetCursorPosition((Left + Columns) * 2, Top - 1 + i);
                 ConsoleOutput.ColorWrite("  ", borderColor);
             }
         }
 
-        public void AddObject(BoardObject obj, bool clearSurroundings = false)
+        public void ProcessInputs()
         {
-            if (clearSurroundings)
+            for (int i = 0; i < MovableObjects.Count; i++)
             {
+                var currenObj = MovableObjects[i];
 
+                currenObj.Move();
+                if (!Project(currenObj))
+                    currenObj.ResetLastMove();
             }
-
-            Ghost tmpObj = new Ghost()
         }
 
-        public void UpdateObjects()
+        public void Update()
         {
-            for (int i = 0; i < Objects.Count; i++)
+            for (int i = 0; i < AlteredObjects.Count; i++)
             {
-                BoardObject obj = Objects[i];
+                GameObjects.GameObject obj = AlteredObjects[i];
 
-                UpdateObject(obj, true);
+                if (obj.Movable)
+                    UpdateObject(obj, true);
 
                 UpdateObject(obj);
             }
 
-            Objects.Clear();
+            AlteredObjects.Clear();
         }
 
-        public void UpdateObject(BoardObject obj, bool clear = false)
+        public void UpdateObject(GameObjects.GameObject obj, bool clear = false)
         {
             for (int y = 0; y < obj.Style.Height; y++)
             {
                 for (int x = 0; x < obj.Style.Width; x++)
                 {
-                    int actualX = x + obj.Coordinates.Column;
-                    int actualY = y + obj.Coordinates.Row;
-
-                    if (obj.Style[x, y] != '*' || actualX < 0 || actualY < 0 || actualX > Columns - 1 || actualY > Rows - 1)
+                    if (obj.Style[x, y] == ' ')
                         continue;
 
                     else
                     {
-                        Panel currentPanel = this[actualX, actualY];
+                        int actualX = 0;
+                        int actualY = 0;
 
-                        if (clear)
-                            this[x + obj.PreviousCoordinates.Column, y + obj.PreviousCoordinates.Row].OccupationType = OccupationType.Neutral;
+                        if (clear && obj.PreviousCoordinates != null)
+                        {
+                            actualX = x + obj.PreviousCoordinates.Column;
+                            actualY = y + obj.PreviousCoordinates.Row;
+
+                            this[actualX, actualY].OccupationType = OccupationType.Neutral;
+                        }
 
                         else
                         {
+                            actualX = x + obj.Coordinates.Column;
+                            actualY = y + obj.Coordinates.Row;
+
+                            Panel currentPanel = this[actualX, actualY];
+
                             Collision collision = checkCollision(currentPanel.OccupationType, obj.OccupationType);
 
                             if (collision != Collision.Nothing)
@@ -188,7 +237,7 @@ namespace ConsoleGame.Objects.GameBoard
 
                                 CacheItemPolicy cip = new CacheItemPolicy()
                                 {
-                                    AbsoluteExpiration = DateTime.Now.AddMinutes(5)
+                                    AbsoluteExpiration = DateTime.Now.AddMinutes(1)
                                 };
 
                                 cache.Add("collision", collision, cip);
@@ -230,7 +279,7 @@ namespace ConsoleGame.Objects.GameBoard
             return Collision.Nothing;
         }
 
-        public bool Project(BoardObject obj, Coordinates coordinates)
+        public bool Project(GameObjects.GameObject obj, params OccupationType[] colliders)
         {
             for (int y = 0; y < obj.Style.Height; y++)
                 for (int x = 0; x < obj.Style.Width; x++)
@@ -238,23 +287,18 @@ namespace ConsoleGame.Objects.GameBoard
                     if (obj.Style[x, y] == ' ')
                         continue;
 
-                    else if (this[x + coordinates.Column, y + coordinates.Row].OccupationType == OccupationType.Block)
-                        return false;
-                }
+                    int actualX = x + obj.Coordinates.Column;
+                    int actualY = y + obj.Coordinates.Row;
 
-            return true;
-        }
+                    if (actualX < 0 ||
+                        actualX > Columns - 1 ||
+                        actualY < 0 ||
+                        actualY > Rows - 1)
+                            return false;
 
-        public bool Project(BoardObject obj, Coordinates coordinates, OccupationType collider)
-        {
-            for (int y = 0; y < obj.Style.Height; y++)
-                for (int x = 0; x < obj.Style.Width; x++)
-                {
-                    if (obj.Style[x, y] == ' ')
-                        continue;
-
-                    else if (this[x + coordinates.Column, y + coordinates.Row].OccupationType == collider)
-                        return false;
+                    for (int i = 0; i < colliders.Length; i++)
+                        if (this[actualX, actualY].OccupationType == colliders[i])
+                            return false;
                 }
 
             return true;
@@ -270,11 +314,27 @@ namespace ConsoleGame.Objects.GameBoard
                 int row = rng.Next(0, Rows - style.Height);
 
                 Block block = new Block(column, row, this, style);
-
-                Objects.Add(block);
             }
 
-            UpdateObjects();
+            Update();
+        }
+
+        public void AddBlocks(int amount)
+        {
+            int width = Columns / 3;
+            int height = Rows / 3;
+            string sprite = new string('*', height * width);
+
+            Style style = new Style(sprite, width, height);
+
+            Block block = new Block(Columns / 3, Rows / 3, this, style);
+
+            Update();
+        }
+
+        public void KillObject(GameObjects.GameObject obj)
+        {
+
         }
     }
 }
