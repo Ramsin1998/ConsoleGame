@@ -130,7 +130,7 @@ namespace ConsoleGame
                 elapsed = now - previous;
 
                 ///////////////LoopCode///////////////
-                game.ProcessInputs();
+                game.InputProcessor();
                 game.Update();
 
                 object collision = cache.Get("collision");
@@ -153,25 +153,13 @@ namespace ConsoleGame
         [STAThread]
         static void Main(string[] args) 
         {
-            engine();
+            //engine();
 
-            //GoardObject obj = new Goal(5, 6, new Goard(), new Style("*", 1, 1));
-            //GoardObject obj10 = new Goal(5, 6, new Goard(), new Style("*", 1, 1));
-            //GoardObject obj11 = new Goal(5, 6, new Goard(), new Style("*", 1, 1));
+            Quadrant quadrant = Quadrant.LowerLeft;
 
-            //Console.WriteLine(obj.GetHashCode());
-            //Console.WriteLine(obj10.GetHashCode());
-            //Console.WriteLine(obj11.GetHashCode());
+            Console.WriteLine((Quadrant)(((int)quadrant + 2) % 4));
 
-            //List<GoardObject> k = new List<GoardObject>();
-
-            //k.Add(obj);
-
-            //k[0].OccupationType = OccupationType.Block;
-
-            //Console.WriteLine(k[0].GetHashCode());
-
-            //Console.ReadLine();
+            Console.ReadLine();
         }
     }
 }

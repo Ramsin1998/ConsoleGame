@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Threading;
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleGame.Objects.GameObjects
 {
@@ -12,24 +13,7 @@ namespace ConsoleGame.Objects.GameObjects
         {
             Speed = speed;
 
-            switch (opposingQuadrant)
-            {
-                case Quadrant.UpperLeft:
-                    Quadrant = Quadrant.LowerRight;
-                    break;
-
-                case Quadrant.UpperRight:
-                    Quadrant = Quadrant.LowerLeft;
-                    break;
-
-                case Quadrant.LowerRight:
-                    Quadrant = Quadrant.UpperLeft;
-                    break;
-
-                case Quadrant.LowerLeft:
-                    Quadrant = Quadrant.UpperRight;
-                    break;
-            }
+            Quadrant = (Quadrant)(((int)opposingQuadrant + 2) % 4);
 
             RandomizeQuadrantPosition(quadrantRatio);
 
@@ -45,9 +29,8 @@ namespace ConsoleGame.Objects.GameObjects
 
         private void initialize()
         {
-            SW = new Stopwatch();
             OccupationType = OccupationType.Player;
-            SW.Start();
+            Avoidables = new List<OccupationType>() { OccupationType.Block };
         }
 
         public override void Move()
@@ -55,39 +38,44 @@ namespace ConsoleGame.Objects.GameObjects
             if (!(SW.ElapsedMilliseconds > Speed))
                 return;
 
-            int column = Coordinates.Column;
-            int row = Coordinates.Row;
+            PreviousCoordinates = Utilities.SystemObjectManipulation.DeepClone(Coordinates);
             Direction direction = Direction.None;
 
             if (Keyboard.IsKeyDown(Key.Up))
             {
-                row -= 1;
+                Coordinates.Row--;
                 direction = Direction.Up;
             }
 
             else if (Keyboard.IsKeyDown(Key.Down))
             {
-                row += 1;
+                Coordinates.Row++;
                 direction = Direction.Down;
             }
 
             if (Keyboard.IsKeyDown(Key.Left))
             {
-                column -= 1;
+                Coordinates.Column--;
                 direction = direction | Direction.Left;
             }
 
             else if (Keyboard.IsKeyDown(Key.Right))
             {
-                column += 1;
+                Coordinates.Column++;
                 direction = direction | Direction.Right;
             }
 
-            Coordinates = new Coordinates(column, row);
-
-            if (Keyboard.IsKeyDown(Key.Space) && direction != Direction.None)
+            if (Keyboard.IsKeyDown(Key.Space))
             {
-                Bullet bullet = new Bullet(this, 25, direction, Game, new Style("*", 1, 1));
+                //Bullet bullet = new Bullet(this, 25, direction, Game, new Style("*", 1, 1));
+                Bullet bullet1 = new Bullet(this, 12, Direction.Up, Game, new Style("*", 1, 1));
+                Bullet bullet2 = new Bullet(this, 12, Direction.Down, Game, new Style("*", 1, 1));
+                Bullet bullet3 = new Bullet(this, 12, Direction.Left, Game, new Style("*", 1, 1));
+                Bullet bullet4 = new Bullet(this, 12, Direction.Right, Game, new Style("*", 1, 1));
+                Bullet bullet5 = new Bullet(this, 12, Direction.Up | Direction.Left, Game, new Style("*", 1, 1));
+                Bullet bullet6 = new Bullet(this, 12, Direction.Up | Direction.Right, Game, new Style("*", 1, 1));
+                Bullet bullet7 = new Bullet(this, 12, Direction.Down | Direction.Left, Game, new Style("*", 1, 1));
+                Bullet bullet8 = new Bullet(this, 12, Direction.Down | Direction.Right, Game, new Style("*", 1, 1));
             }
 
             base.Move();

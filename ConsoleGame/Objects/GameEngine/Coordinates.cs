@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleGame.Objects.GameEngine
 {
+    [Serializable]
     public class Coordinates
     {
         private int row;
@@ -56,10 +57,10 @@ namespace ConsoleGame.Objects.GameEngine
 
         public Coordinates(int column, int row, int maxColumn, int maxRow)
         {
-            Row = row;
-            Column = column;
             this.maxColumn = maxColumn;
             this.maxRow = maxRow;
+            Row = row;
+            Column = column;
         }
 
         public override bool Equals(object obj)

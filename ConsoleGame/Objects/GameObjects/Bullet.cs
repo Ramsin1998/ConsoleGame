@@ -11,39 +11,37 @@ namespace ConsoleGame.Objects.GameObjects
     public class Bullet : GameObject
     {
         public Direction Direction { get; set; }
-        public GameObject Obj { get; set; }
+        public GameObject ObjFiredFrom { get; set; }
 
-        public Bullet(GameObject obj, int speed, Direction direction, Game game, Style style) : base(game, style, true)
+        public Bullet(GameObject objFiredFrom, int speed, Direction direction, Game game, Style style) : base(game, style, true)
         {
-            Obj = obj;
-            SW = new Stopwatch();
+            ObjFiredFrom = objFiredFrom;
             Speed = speed;
             OccupationType = OccupationType.Bullet;
             Direction = direction;
+            Avoidables = new List<OccupationType>() { OccupationType.Block };
 
             calculateAndSetCoordinates();
-
-            SW.Start();
         }
 
         private void calculateAndSetCoordinates()
         {
-            int column = Obj.Coordinates.Column + (Obj.Style.Width - Style.Width) / 2;
-            int row = Obj.Coordinates.Row + (Obj.Style.Height - Style.Height) / 2;
+            int column = ObjFiredFrom.Coordinates.Column + (ObjFiredFrom.Style.Width - Style.Width) / 2;
+            int row = ObjFiredFrom.Coordinates.Row + (ObjFiredFrom.Style.Height - Style.Height) / 2;
 
             if ((Direction & Direction.Up) == Direction.Up)
-                row -= row + Style.Height - Obj.Coordinates.Row;
+                row -= row + Style.Height - ObjFiredFrom.Coordinates.Row;
 
             else if ((Direction & Direction.Down) == Direction.Down)
-                row += Obj.Coordinates.Row + Obj.Style.Height - row;
+                row += ObjFiredFrom.Coordinates.Row + ObjFiredFrom.Style.Height - row;
 
             if ((Direction & Direction.Left) == Direction.Left)
-                column -= column + Style.Width - Obj.Coordinates.Column;
+                column -= column + Style.Width - ObjFiredFrom.Coordinates.Column;
 
             else if ((Direction & Direction.Right) == Direction.Right)
-                column += Obj.Coordinates.Column + Obj.Style.Width - column;
+                column += ObjFiredFrom.Coordinates.Column + ObjFiredFrom.Style.Width - column;
 
-            Coordinates = new Coordinates(column, row);
+            Coordinates = new Coordinates(column, row, Game.Columns - Style.Width, Game.Rows - Style.Height);
         }
 
         public override void Move()
@@ -51,22 +49,19 @@ namespace ConsoleGame.Objects.GameObjects
             if (!(SW.ElapsedMilliseconds > Speed))
                 return;
 
-            int column = Coordinates.Column;
-            int row = Coordinates.Row;
+            PreviousCoordinates = Utilities.SystemObjectManipulation.DeepClone(Coordinates);
 
             if ((Direction & Direction.Up) == Direction.Up)
-                row--;
+                Coordinates.Row--;
 
             else if ((Direction & Direction.Down) == Direction.Down)
-                row++;
+                Coordinates.Row++;
 
             if ((Direction & Direction.Left) == Direction.Left)
-                column--;
+                Coordinates.Column--;
 
             else if ((Direction & Direction.Right) == Direction.Right)
-                column++;
-
-            Coordinates = new Coordinates(column, row);
+                Coordinates.Column++;
 
             base.Move();
 

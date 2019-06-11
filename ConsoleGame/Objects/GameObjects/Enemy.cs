@@ -28,10 +28,7 @@ namespace ConsoleGame.Objects.GameObjects
 
         private void initialize()
         {
-            SW = new Stopwatch();
             OccupationType = OccupationType.Enemy;
-
-            SW.Start();
         }
 
         public override void Move()
@@ -39,30 +36,29 @@ namespace ConsoleGame.Objects.GameObjects
             if (!(SW.ElapsedMilliseconds > Speed))
                 return;
 
+            PreviousCoordinates = Utilities.SystemObjectManipulation.DeepClone(Coordinates);
+
             DeltaX = Player.Coordinates.Column - Coordinates.Column;
             DeltaY = Player.Coordinates.Row - Coordinates.Row;
             int absDeltaX = Math.Abs(DeltaX);
             int absDeltaY = Math.Abs(DeltaY);
 
-            int column = Coordinates.Column;
-            int row = Coordinates.Row;
-
             void moveX()
             {
                 if (DeltaX > 0)
-                    column += 1;
+                    Coordinates.Column++;
 
                 else
-                    column -= 1;
+                    Coordinates.Column--;
             }
 
             void moveY()
             {
                 if (DeltaY > 0)
-                    row += 1;
+                    Coordinates.Row++;
 
                 else
-                    row -= 1;
+                    Coordinates.Row--;
             }
 
             if (absDeltaX == absDeltaY)
@@ -76,8 +72,6 @@ namespace ConsoleGame.Objects.GameObjects
 
             else
                 moveY();
-
-            Coordinates = new Coordinates(column, row);
 
             base.Move();
 

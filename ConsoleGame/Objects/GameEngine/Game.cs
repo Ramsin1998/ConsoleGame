@@ -173,15 +173,16 @@ namespace ConsoleGame.Objects.GameEngine
             }
         }
 
-        public void ProcessInputs()
+        public void InputProcessor()
         {
             for (int i = 0; i < MovableObjects.Count; i++)
             {
-                var currenObj = MovableObjects[i];
+                var obj = MovableObjects[i];
 
-                currenObj.Move();
-                if (!Project(currenObj))
-                    currenObj.RevertLastMove();
+                obj.Move();
+
+                if (!Project(obj))
+                    obj.RevertLastMove();
             }
         }
 
@@ -191,8 +192,7 @@ namespace ConsoleGame.Objects.GameEngine
             {
                 GameObject obj = AlteredObjects[i];
 
-                if (obj.Movable)
-                    UpdateObject(obj, true);
+                UpdateObject(obj, true);
 
                 UpdateObject(obj);
             }
@@ -209,48 +209,31 @@ namespace ConsoleGame.Objects.GameEngine
                     if (obj.Style[x, y] == ' ')
                         continue;
 
+                    if (clear && obj.PreviousCoordinates != null)
+                        this[x + obj.PreviousCoordinates.Column, y + obj.PreviousCoordinates.Row].OccupationType = OccupationType.Neutral;
+
                     else
                     {
-                        int actualX = 0;
-                        int actualY = 0;
+                             Panel currentPanel = this[x + obj.Coordinates.Column, y + obj.Coordinates.Row];
 
-                        if (clear)
+                        Collision collision = checkCollision(currentPanel.OccupationType, obj.OccupationType);
+
+                        if (collision != Collision.Nothing)
                         {
-                            if (obj.PreviousCoordinates != null)
-                            {
-                                actualX = x + obj.PreviousCoordinates.Column;
-                                actualY = y + obj.PreviousCoordinates.Row;
+                            MemoryCache cache = MemoryCache.Default;
 
-                                this[actualX, actualY].OccupationType = OccupationType.Neutral;
-                            }
+                            CacheItemPolicy cip = new CacheItemPolicy()
+                            {
+                                AbsoluteExpiration = DateTime.Now.AddMinutes(1)
+                            };
+
+                            cache.Add("collision", collision, cip);
+
+                            return;
                         }
 
                         else
-                        {
-                            actualX = x + obj.Coordinates.Column;
-                            actualY = y + obj.Coordinates.Row;
-
-                            Panel currentPanel = this[actualX, actualY];
-
-                            Collision collision = checkCollision(currentPanel.OccupationType, obj.OccupationType);
-
-                            if (collision != Collision.Nothing)
-                            {
-                                MemoryCache cache = MemoryCache.Default;
-
-                                CacheItemPolicy cip = new CacheItemPolicy()
-                                {
-                                    AbsoluteExpiration = DateTime.Now.AddMinutes(1)
-                                };
-
-                                cache.Add("collision", collision, cip);
-
-                                return;
-                            }
-
-                            else
-                                currentPanel.OccupationType = obj.OccupationType;
-                        }
+                            currentPanel.OccupationType = obj.OccupationType;
                     }
                 }
             }
@@ -282,7 +265,7 @@ namespace ConsoleGame.Objects.GameEngine
             return Collision.Nothing;
         }
 
-        public bool Project(GameObject obj, params OccupationType[] colliders)
+        public bool Project(GameObject obj)
         {
             for (int y = 0; y < obj.Style.Height; y++)
                 for (int x = 0; x < obj.Style.Width; x++)
@@ -299,9 +282,10 @@ namespace ConsoleGame.Objects.GameEngine
                         actualY > Rows - 1)
                             return false;
 
-                    for (int i = 0; i < colliders.Length; i++)
-                        if (this[actualX, actualY].OccupationType == colliders[i])
-                            return false;
+                    if (obj.Avoidables != null)
+                        for (int i = 0; i < obj.Avoidables.Count; i++)
+                            if (this[actualX, actualY].OccupationType == obj.Avoidables[i])
+                                return false;
                 }
 
             return true;

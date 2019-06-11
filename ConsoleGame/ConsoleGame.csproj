@@ -78,6 +78,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ConsoleOutput.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />
+    <Compile Include="Utilities\SystemObjectManipulation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
